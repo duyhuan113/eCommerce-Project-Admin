@@ -20,12 +20,12 @@ component.loginPage = `
     </div>
 </div>
 </section>
-    </div>
+</div>
 `;
 
 component.sideBar = `
     <div class="left">
-        <span class="left__icon">
+        <span lass="left__icon">
             <span></span>
             <span></span>
             <span></span>
@@ -58,7 +58,7 @@ component.sideBar = `
                     <a href="view_customers.html" class="left__title"><img src="assets/icon-users.svg" alt="">Customer</a>
                 </li>
                 <li class="left__menuItem">
-                    <a href="view_orders.html" class="left__title"><img src="assets/icon-book.svg" alt="">Order</a>
+                    <a onclick="view.setScreenBtn('orderPage')" class="left__title"><img src="assets/icon-book.svg" alt="">Order</a>
                 </li>
                 <li class="left__menuItem">
                     <div class="left__title"><img src="assets/icon-user.svg" alt="">Admin<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
@@ -73,7 +73,7 @@ component.sideBar = `
             </ul>
             
         </div>
-    </div>
+    </div>c
 `;
 
 component.homePage = `
@@ -108,6 +108,7 @@ component.homePage = `
                                 <table width="100%">
                                     <thead>
                                         <tr>
+                                            <th>No.</th>
                                             <th>ID</th>
                                             <th>Email</th>
                                             <th>Quantity</th>
@@ -115,6 +116,7 @@ component.homePage = `
                                             <th>Total</th>
                                             <th>Status</th>
                                             <th>Confirm</th>
+                                            <th>View</th>
                                             <th>Edit</th> 
                                             <th>Delete</th> 
                                         </tr>
@@ -124,7 +126,7 @@ component.homePage = `
                                     </tbody>
                                 </table>
                             </div>
-                            <a href="view_orders.html" class="right__tableMore"><p>View all order</p> <img src="assets/arrow-right-black.svg" alt=""></a>
+                            <a onclick="view.setScreenBtn('orderPage')" class="right__tableMore"><p>View all order</p> <img src="assets/arrow-right-black.svg" alt=""></a>
                         </div>
                     </div>
                 </div>
@@ -144,8 +146,8 @@ component.productPage = `
                     <div class="right__table">
                         <div class="topnav">
                             <form>
-                                <input type="text" placeholder="Search...">
-                                <input type="submit" name="" value="Search">
+                                <input id="inputSearch" type="text" placeholder="Search...">
+                                <button id="btnSearch" >Search</button>
                             </form>
                         </div>
                         <div class="right__tableWrapper">
@@ -301,4 +303,69 @@ component.addProduct = `
             </div>
         </div>
     </div>
+`;
+
+
+component.orderPage =`
+<div class="wrapper">
+    <div class="container">
+        <div id="dashBoard" class="dashboard">
+            <div class="right">
+                <div class="right__content">
+                    <div class="right__title">Dashboard</div>
+                    <p class="right__desc">View Order</p>
+                    <div class="right__table">
+                        <div class="topnav">
+                            <form>
+                                <input id="inputSearch" type="text" placeholder="Search...">
+                                <button id="btnSearch" >Search</button>
+                            </form>
+                        </div>
+                        <div class="right__tableWrapper">
+                        <div class="right__tableWrapper">
+                            <table width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>ID</th>
+                                        <th>Created by Email</th>
+                                        <th>Quantity</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Confirm</th>
+                                        <th>View</th>
+                                        <th>Edit</th> 
+                                        <th>Delete</th> 
+                                    </tr>
+                                </thead>
+                                <tbody id="orders_tbody">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- div Update, div này bị bẩn -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="right__title">Edit Product Information</div>
+                    <span id="closeBtn" class="close">&times;</span>
+                    <div class="right">
+                        <div class="right__content">
+                            <div id="mainInformation" class="information">
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
 `;

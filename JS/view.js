@@ -23,6 +23,7 @@ view.setActiveScreen = (screenName) => {
             document.getElementById('app').innerHTML = component.productPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             model.getProductsData();
+            view.searchByName();
 
             break;
         case 'addProduct':
@@ -36,21 +37,25 @@ view.setActiveScreen = (screenName) => {
             });
 
             break;
+        case 'orderPage':
+            document.getElementById('app').innerHTML = component.orderPage;
+            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            model.getOrdersData();
+
+            
+
+            break;
     }
 };
 
 
-view.showDashBoard = () => {
+view.showDashBoard = (data) => {
     const productCardNumber = document.getElementById('productCardNumber');
     const userCardNumber = document.getElementById('userCardNumber');
     const orderCardNumber = document.getElementById('orderCardNumber');
     const orderTable = document.getElementById('orders_tbody');
-    let ordersData = model.ordersData;
-    ordersData.sort(function (a, b) {
-        // Turn your strings into dates, and then subtract them
-        // to get a value that is either negative, positive, or zero.
-        return new Date(b.createAt) - new Date(a.createAt);
-    });
+    let ordersData = data;
+
     productCardNumber.innerHTML = model.productsData.length;
     userCardNumber.innerHTML = model.usersData.length;
     orderCardNumber.innerHTML = ordersData.length;
@@ -62,43 +67,67 @@ view.showDashBoard = () => {
 
 };
 
-view.setStatusOrder = (status) => {
-    if (status) {
-        return 'Accept'
-    } else {
-        return 'Waiting'
-    }
-};
 
-view.showProductList = () => {
-    let productsData = model.productsData;
+
+view.showProductList = (data) => {
+    let productsData = data;
     const itemTbody = document.getElementById('item_tbody');
+    const inputStatus = document.getElementsByClassName('inputStatus')
     itemTbody.innerHTML = ''
     for (let i = 0; i < productsData.length; i++) {
         itemTbody.innerHTML += view.htmlProductTable(productsData[i], i);
     };
 };
 
-view.htmlOrderList = (data) => {
+
+// html
+view.htmlOrderList = (data, i) => {
     let html = `
     <tr>
+        <td>${i + 1}</td>
         <td>${data.id}</td>
-        <td data-label="Email">${data.email}</td>
-        
+        <td data-label="Email">${data.email}</td> 
         <td data-label="Quantity">${getQuantity(data)}</td>
         <td data-label="Created">${formatDate(data.createAt)}</td>
         <td data-label="Total">${data.total}$</td>
-        <td  class="orderStatus" data-label="Status">${view.setStatusOrder(data.status)}</td>
-        <td data-label="Payment" class="right__confirm">
+        <td class="orderStatus" data-label="Status">${data.status.toUpperCase()}</td>
+        <td class="orderConfirm right__confirm" data-label="Payment" >
             <a href="" class="right__iconTable"><img src="assets/icon-check.svg" alt=""></a>
             <a href="" class="right__iconTable"><img src="assets/icon-x.svg" alt=""></a>
         </td>
-        <td data-label="Edit" class="right__iconTable"><a href=""><img src="assets/icon-edit.svg" alt=""></a></td>
-        <td data-label="Delete" class="right__iconTable"><a href=""><img src="assets/icon-trash-black.svg" alt=""></a></td>
+        <td data-label="Detail" class="right__iconTable" onclick="view.showDetailOrder(${i},'view')"><img src="assets/eye.png" alt=""></td>
+        <td data-label="Edit" class="right__iconTable" onclick="view.showDetailOrder(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
+        <td data-label="Delete" class="right__iconTable" onclick="model.removeOrder('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html
 };
+view.showDetailOrder = (index, option) => {
+    let data = model.ordersData;
+    const mainInformation = document.getElementById('mainInformation');
+    // Get the modal
+    let modal = document.getElementById("myModal");
+    // Get the <span> element that closes the modal
+    const closeBtn = document.getElementById('closeBtn');
+    // When the user clicks the button, open the modal 
+    modal.style.display = "block";
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = "none";
+    });
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
 
+    if (option == 'view') {
+        mainInformation.innerHTML = view.htmlDetailOrder(data[index]);
+    } else if (option == 'update') {
+        mainInformation.innerHTML = view.htmlInputProduct(data[index]);
+        view.listenEventUpdate(index);
+    }
+};
 view.htmlProductTable = (data, i) => {
     html = `
     <tr>
@@ -107,13 +136,19 @@ view.htmlProductTable = (data, i) => {
         <td data-label="ID"> ${data.name}</td>
         <td data-label="Quantity">${data.availableQuantity}</td>
         <td data-label="Price">${data.price}$</td>
-        <td data-label="Category">Enable/Disable</td>
+        <td data-label="Category">
+            <label class="switch">
+            <input class="inputStatus" onclick="model.updateStatusProduct('${data.id}',${data.status})" type="checkbox" ${data.status}  >
+            <span class="slider"></span>
+            </label>
+        </td>
         <td data-label="Detail" class="right__iconTable" onclick="view.showDetailProduct(${i},'view')"><img src="assets/eye.png" alt=""></td>
         <td data-label="Edit" class="right__iconTable" onclick="view.showDetailProduct(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
         <td data-label="Delete" class="right__iconTable" onclick="model.removeProduct('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html;
 };
+
 view.htmlDetailProduct = (data) => {
     html = `
     <div class="img_pro">
@@ -260,7 +295,108 @@ view.htmlInputProduct = (data) => {
     return html;
 };
 
+view.htmlDetailOrder = (data)=>{
+ html = `
+    <div class="order_detail">
+        <table width="100%">
+            <tr>
+                <th width="200px">Order_ID</th>
+                <td>${data.id}</td>
+            </tr>
+            <tr>
+                <th>Customer_Name</th>
+                <td>${data.id}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>${data.id}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>${data.id}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>${data.id}, ${data.id}</td>
+            </tr>
+            <tr>
+                <th height="150px">Note</th>
+                <td>${data.id}</td>
+            </tr>
+        </table>
+        <div class="donhang">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th width="180px">Product_ID</th>
+                        <th>Product_Name</th>
+                        <th width="120px">Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
 
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td data-label="Product_ID">${data.id}</td>
+                        <td data-label="Product_Name">${data.id}</td>
+                        <td data-label="Quantity">${data.id}</td>
+                        <td data-label="Price">${data.id}</td>
+                        <td data-label="Pay">${data.id}</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Product_ID">${data.id}</td>
+                        <td data-label="Product_Name">${data.id}</td>
+                        <td data-label="Quantity">${data.id}</td>
+                        <td data-label="Price">${data.id}</td>
+                        <td data-label="Pay">${data.id}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td rowspan="4" colspan="4">Grand total</td>
+                        <td>${data.id}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="tinhtrang">
+            <table width="100%">
+                <tr>
+                    <th width="200px">Order_ID</th>
+                    <td>${data.id}</td>
+                </tr>
+                <tr>
+                    <th>Customer_Name</th>
+                    <td>${data.id}</td>
+                </tr>
+                <tr>
+                    <th>Phone</th>
+                    <td>${data.id}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>${data.id}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>${data.id}, ${data.id}</td>
+                </tr>
+                <tr>
+                    <th height="150px">Note</th>
+                    <td>${data.id}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+               
+
+ `;
+ return html;
+};
+
+//function của Product
 view.addProduct = async () => {
     let files = document.querySelector("#photo").files;
     const addProductForm = document.getElementById('addProductForm');
@@ -287,7 +423,7 @@ view.addProduct = async () => {
         status: true
     };
     if (files.length >= 3) {
-        if(controller.validateForm(data)){
+        if (controller.validateForm(data)) {
             let img = await model.uploadImgToFirestorage(files);
             data.img = [...img];
             model.addProduct(data);
@@ -297,12 +433,8 @@ view.addProduct = async () => {
     }
 };
 
-
-
-
-
-
 view.showDetailProduct = (index, option) => {
+    
     let productsData = model.productsData;
     const mainInformation = document.getElementById('mainInformation');
     // Get the modal
@@ -328,7 +460,6 @@ view.showDetailProduct = (index, option) => {
         mainInformation.innerHTML = view.htmlInputProduct(productsData[index]);
         view.listenEventUpdate(index);
     }
-
 };
 
 view.listenEventUpdate = (index) => {
@@ -383,6 +514,53 @@ view.updateProduct = async (data) => {
 };
 
 
+//đoạn này search
+view.searchByName = () => {
+    const inputSearch = document.getElementById('inputSearch');
+
+    inputSearch.addEventListener('input', () => {
+        view.filterByName(inputSearch.value)
+        //console.log(inputSearch.value);
+    })
+};
+view.filterByName = (keyValue) => {
+    // lọc theo tên và category
+    let data = model.productsData;
+    let filterData = data.filter(item => {
+        return item.name.toLowerCase().includes(keyValue.toLowerCase()) || item.category.toLowerCase().includes(keyValue.toLowerCase())
+    })
+    //sắp xếp alphabet
+    filterData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+    view.showProductList(filterData);
+};
+
+// function cua order
+view.showOrderList = (data) => {
+    let orderConfirm = document.getElementsByClassName('orderConfirm');
+    let comfirmBtn = document.getElementById('comfirmBtn');
+    const orderTable = document.getElementById('orders_tbody');
+    orderTable.innerHTML = ``;
+    for (let i = 0; i < data.length; i++) {
+        orderTable.innerHTML += view.htmlOrderList(data[i], i);
+        
+        if (data[i].status == 'confirm') {
+            orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-check.svg" alt=""></a>`; 
+            orderConfirm[i].style.backgroundColor ='#8BF556';
+        } else if (data[i].status == 'cancel') {
+            orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-x.svg" alt=""></a>`;
+            orderConfirm[i].style.backgroundColor ='#F27C94';
+        }else if (data[i].status == 'wait') {
+            orderConfirm[i].innerHTML = `
+            <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data[i].id}','confirm')"><img src="assets/icon-check.svg" alt=""></a>
+            <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data[i].id}','cancel')"><img src="assets/icon-x.svg" alt=""></a>`;
+        }
+
+    };
+};
+
+
+
+
 
 view.setScreenBtn = (value) => {
 
@@ -420,3 +598,11 @@ function getQuantity(data) {
 
 
 
+
+view.setStatusOrder = (status) => {
+    if (status) {
+        return 'Accept'
+    } else {
+        return 'Waiting'
+    }
+};

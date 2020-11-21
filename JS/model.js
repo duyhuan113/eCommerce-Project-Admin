@@ -24,7 +24,7 @@ model.getProductsData = async () => {
     model.productsData = getDataFromDocs(response.docs).sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name > a.name) ? -1 : 0));
     model.getUsersData();
     if (model.currentLocationScreen == 'productPage') {
-        view.showProductList();
+        view.showProductList(model.productsData);
     }
 };
 model.getUsersData = async () => {
@@ -37,9 +37,11 @@ model.getUsersData = async () => {
 model.getOrdersData = async () => {
     //đoạn này bóc tách dữ liệu từ db trả về
     const response = await firebase.firestore().collection("orders").get()
-    model.ordersData = getDataFromDocs(response.docs);
+    model.ordersData = getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));;
     if (model.currentLocationScreen == 'homePage') {
-        view.showDashBoard()
+        view.showDashBoard(model.ordersData);
+    }else{
+        view.showOrderList(model.ordersData);
     }
 };
 
@@ -88,7 +90,26 @@ model.removeProduct = (id)=>{
     }).catch(function(error) {
         console.error("Error removing document: ", error);
     });
-}
+};
+
+model.updateStatusProduct= async (id,status)=>{
+    if(status){
+        await firebase.firestore().collection('products').doc(id).update({status:false});
+    }else {
+        await firebase.firestore().collection('products').doc(id).update({status:true});
+    }
+    model.getProductsData();
+};
+
+model.updateStatusOrder = async (id,status)=>{
+    console.log(id);
+    console.log(status);
+    await firebase.firestore().collection('orders').doc(id).update({status:status});
+    model.getOrdersData();
+};
+
+
+
 
 //đoạn này lấy Data từ doc
 getDataFromDocs = (docs) => {
