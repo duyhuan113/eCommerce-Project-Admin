@@ -71,9 +71,8 @@ component.sideBar = `
                     <a href="" class="left__title" ><img src="assets/icon-logout.svg" alt="">Sign out</a>
                 </li>
             </ul>
-            
         </div>
-    </div>c
+    </div>
 `;
 
 component.homePage = `
@@ -175,7 +174,7 @@ component.productPage = `
             </div>
         </div>
     </div>
-        <!-- div Update, div này bị bẩn -->
+        <!-- div Update, div này bị ẩn -->
         <div id="myModal" class="modal">
             <!-- Modal content -->
             <div class="modal-content">

@@ -29,21 +29,15 @@ view.setActiveScreen = (screenName) => {
         case 'addProduct':
             document.getElementById('app').innerHTML = component.addProduct;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
-
             const addBtn = document.getElementById('addBtn');
             addBtn.addEventListener('click', () => {
-                //model.uploadImgToFirestorage();
                 view.addProduct();
             });
-
             break;
         case 'orderPage':
             document.getElementById('app').innerHTML = component.orderPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             model.getOrdersData();
-
-            
-
             break;
     }
 };
@@ -69,15 +63,10 @@ view.showDashBoard = (data) => {
 
 
 
-view.showProductList = (data) => {
-    let productsData = data;
-    const itemTbody = document.getElementById('item_tbody');
-    const inputStatus = document.getElementsByClassName('inputStatus')
-    itemTbody.innerHTML = ''
-    for (let i = 0; i < productsData.length; i++) {
-        itemTbody.innerHTML += view.htmlProductTable(productsData[i], i);
-    };
-};
+
+
+
+
 
 
 // html
@@ -103,6 +92,8 @@ view.htmlOrderList = (data, i) => {
 };
 view.showDetailOrder = (index, option) => {
     let data = model.ordersData;
+    let dataItems = data[index].items
+
     const mainInformation = document.getElementById('mainInformation');
     // Get the modal
     let modal = document.getElementById("myModal");
@@ -123,12 +114,23 @@ view.showDetailOrder = (index, option) => {
 
     if (option == 'view') {
         mainInformation.innerHTML = view.htmlDetailOrder(data[index]);
+        const tbody_itemOrder = document.getElementById('tbody_itemOrder');
+        for (let i = 0; i < dataItems.length; i++) {
+            tbody_itemOrder.innerHTML += `
+            <tr>
+                <td data-label="Product ID">${dataItems[i].id}</td>
+                <td data-label="Product Name">${dataItems[i].name}</td>
+                <td data-label="Quantity">${dataItems[i].inCart}</td>
+                <td data-label="Price">${dataItems[i].price}</td>
+                <td data-label="Pay">${dataItems[i].inCart * dataItems[i].price} $</td>
+            </tr>`;
+        }
     } else if (option == 'update') {
         mainInformation.innerHTML = view.htmlInputProduct(data[index]);
-        view.listenEventUpdate(index);
+        //view.listenEventUpdate(index);
     }
 };
-view.htmlProductTable = (data, i) => {
+view.htmlProductList = (data, i) => {
     html = `
     <tr>
         <td>${i + 1}</td>
@@ -136,11 +138,10 @@ view.htmlProductTable = (data, i) => {
         <td data-label="ID"> ${data.name}</td>
         <td data-label="Quantity">${data.availableQuantity}</td>
         <td data-label="Price">${data.price}$</td>
-        <td data-label="Category">
-            <label class="switch">
-            <input class="inputStatus" onclick="model.updateStatusProduct('${data.id}',${data.status})" type="checkbox" ${data.status}  >
+        <td data-label="Status">    
+        <label class="switch">
             <span class="slider"></span>
-            </label>
+        </label>
         </td>
         <td data-label="Detail" class="right__iconTable" onclick="view.showDetailProduct(${i},'view')"><img src="assets/eye.png" alt=""></td>
         <td data-label="Edit" class="right__iconTable" onclick="view.showDetailProduct(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
@@ -295,68 +296,53 @@ view.htmlInputProduct = (data) => {
     return html;
 };
 
-view.htmlDetailOrder = (data)=>{
- html = `
+view.htmlDetailOrder = (data) => {
+    html = `
     <div class="order_detail">
         <table width="100%">
             <tr>
-                <th width="200px">Order_ID</th>
+                <th width="200px">Order ID</th>
                 <td>${data.id}</td>
             </tr>
             <tr>
-                <th>Customer_Name</th>
-                <td>${data.id}</td>
+                <th>Customer Name</th>
+                <td>${data.name}</td>
             </tr>
             <tr>
                 <th>Phone</th>
-                <td>${data.id}</td>
+                <td>${data.phone}</td>
             </tr>
             <tr>
                 <th>Email</th>
-                <td>${data.id}</td>
+                <td>${data.email}</td>
             </tr>
             <tr>
                 <th>Address</th>
-                <td>${data.id}, ${data.id}</td>
+                <td>${data.address}, ${data.city}</td>
             </tr>
             <tr>
                 <th height="150px">Note</th>
-                <td>${data.id}</td>
+                <td>${data.note}</td>
             </tr>
         </table>
         <div class="donhang">
             <table width="100%">
                 <thead>
                     <tr>
-                        <th width="180px">Product_ID</th>
-                        <th>Product_Name</th>
+                        <th width="200px">Product ID</th>
+                        <th>Product Name</th>
                         <th width="120px">Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
-
                     </tr>
                 </thead>
-
-                <tbody>
-                    <tr>
-                        <td data-label="Product_ID">${data.id}</td>
-                        <td data-label="Product_Name">${data.id}</td>
-                        <td data-label="Quantity">${data.id}</td>
-                        <td data-label="Price">${data.id}</td>
-                        <td data-label="Pay">${data.id}</td>
-                    </tr>
-                    <tr>
-                        <td data-label="Product_ID">${data.id}</td>
-                        <td data-label="Product_Name">${data.id}</td>
-                        <td data-label="Quantity">${data.id}</td>
-                        <td data-label="Price">${data.id}</td>
-                        <td data-label="Pay">${data.id}</td>
-                    </tr>
+                <tbody id ="tbody_itemOrder">
+                    
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td rowspan="4" colspan="4">Grand total</td>
-                        <td>${data.id}</td>
+                        <td rowspan="4" colspan="4">Grand Total</td>
+                        <td>${data.total} $</td>
                     </tr>
                 </tfoot>
             </table>
@@ -364,39 +350,39 @@ view.htmlDetailOrder = (data)=>{
         <div class="tinhtrang">
             <table width="100%">
                 <tr>
-                    <th width="200px">Order_ID</th>
-                    <td>${data.id}</td>
+                    <th width="200px">Created At</th>
+                    <td>${formatDate(data.createAt)}</td>
                 </tr>
                 <tr>
-                    <th>Customer_Name</th>
-                    <td>${data.id}</td>
+                    <th>Payment Method</th>
+                    <td>${data.methodPayment.toUpperCase()}</td>
                 </tr>
                 <tr>
-                    <th>Phone</th>
-                    <td>${data.id}</td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td>${data.id}</td>
-                </tr>
-                <tr>
-                    <th>Address</th>
-                    <td>${data.id}, ${data.id}</td>
-                </tr>
-                <tr>
-                    <th height="150px">Note</th>
-                    <td>${data.id}</td>
+                    <th>Status</th>
+                    <td>${data.status.toUpperCase()}</td>
                 </tr>
             </table>
         </div>
     </div>
-               
-
  `;
- return html;
+    return html;
 };
 
 //function của Product
+view.showProductList = (data) => {
+    const itemTbody = document.getElementById('item_tbody');
+    const status = document.getElementsByClassName('switch');
+    itemTbody.innerHTML = ''
+    for (let i = 0; i < data.length; i++) {
+        itemTbody.innerHTML += view.htmlProductList(data[i], i);
+        if (data[i].status) {
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatusProduct('${data[i].id}',false)" type="checkbox" checked>`);
+        } else {
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatusProduct('${data[i].id}',true)" type="checkbox" >`);
+        }
+    };
+};
+
 view.addProduct = async () => {
     let files = document.querySelector("#photo").files;
     const addProductForm = document.getElementById('addProductForm');
@@ -434,7 +420,7 @@ view.addProduct = async () => {
 };
 
 view.showDetailProduct = (index, option) => {
-    
+
     let productsData = model.productsData;
     const mainInformation = document.getElementById('mainInformation');
     // Get the modal
@@ -513,7 +499,6 @@ view.updateProduct = async (data) => {
     model.updateProduct(data.id, dataToUpdate)
 };
 
-
 //đoạn này search
 view.searchByName = () => {
     const inputSearch = document.getElementById('inputSearch');
@@ -542,23 +527,21 @@ view.showOrderList = (data) => {
     orderTable.innerHTML = ``;
     for (let i = 0; i < data.length; i++) {
         orderTable.innerHTML += view.htmlOrderList(data[i], i);
-        
+
+        //đoạn này set status của order
         if (data[i].status == 'confirm') {
-            orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-check.svg" alt=""></a>`; 
-            orderConfirm[i].style.backgroundColor ='#8BF556';
+            orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-check.svg" alt=""></a>`;
+            orderConfirm[i].style.backgroundColor = '#8BF556';
         } else if (data[i].status == 'cancel') {
             orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-x.svg" alt=""></a>`;
-            orderConfirm[i].style.backgroundColor ='#F27C94';
-        }else if (data[i].status == 'wait') {
+            orderConfirm[i].style.backgroundColor = '#F27C94';
+        } else if (data[i].status == 'wait') {
             orderConfirm[i].innerHTML = `
             <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data[i].id}','confirm')"><img src="assets/icon-check.svg" alt=""></a>
             <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data[i].id}','cancel')"><img src="assets/icon-x.svg" alt=""></a>`;
         }
-
     };
 };
-
-
 
 
 
@@ -567,6 +550,7 @@ view.setScreenBtn = (value) => {
     localStorage.setItem('currentLocationScreen', value);
     location.reload();
 };
+
 view.signOutButton = () => {
     firebase.auth().signOut();
     model.currentUser = {};
@@ -577,7 +561,6 @@ view.signOutButton = () => {
 view.setErrorMessage = (elementId, content) => {
     document.getElementById(elementId).innerText = content;
 };
-
 
 function formatDate(input) {
     var date = new Date(input);
@@ -597,12 +580,3 @@ function getQuantity(data) {
 }
 
 
-
-
-view.setStatusOrder = (status) => {
-    if (status) {
-        return 'Accept'
-    } else {
-        return 'Waiting'
-    }
-};

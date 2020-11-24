@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="CSS/main.css">
+    <link rel="stylesheet" href="CSS/main.css">         
 </head>
 
 
@@ -14,79 +14,31 @@
     <div class="right">
         <div class="right__content">
             <div class="right__title">Dashboard</div>
-            <p class="right__desc">View order Detail</p>
+            <p class="right__desc">View category</p>
             <div class="right__table">
                 <div class="right__tableWrapper">
-                    <div class="order_detail">
-                        <table width="100%">
+                    <table width="100%">
+                        <thead>
                             <tr>
-                                <th width="200px">Order_ID</th>
-                                <td>487944</td>
+                                <th  width="120px">ID</th>
+                                <th  width="200px">Name</th>
+                                <th width="500px">Descripton</th>
+                                <th width="120px">Edit</th> 
+                                <th>Delete</th>
                             </tr>
-                            <tr>
-                                <th>Customer_Name</th>
-                                <td>Nguyen Van Loc</td>
-                            </tr>
-                            <tr>
-                                <th>Phone</th>
-                                <td>03548415157</td>
-                            </tr>
-                            <tr>
-                                <th>Email</th>
-                                <td>Loc78455@gmai.com</td>
-                            </tr>
-                            <tr>
-                                <th>Address</th>
-                                <td>Ha Noi</td>
-                            </tr>
-                            <tr>
-                                <th height="150px">Note</th>
-                                <td></td>
-                            </tr>
-                        </table>
-                        <div class="donhang">
-                            <table width="100%">
-                                <thead>
-                                    <tr>
-                                        <th width="180px">Product_ID</th>
-                                        <th>Product_Name</th>
-                                        <th width="120px">Quantity</th>
-                                        <th>Price</th>
-                                        <th>Total</th>
-
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr>
-                                        <td data-label="Product_ID">784</td>
-                                        <td data-label="Product_Name">Iphone</td>
-                                        <td data-label="Quantity">2</td>
-                                        <td data-label="Price">4</td>
-                                        <td data-label="Pay">8</td>
-                                    </tr>
-                                    <tr>
-                                        <td data-label="Product_ID">852</td>
-                                        <td data-label="Product_Name">Oppo</td>
-                                        <td data-label="Quantity">1</td>
-                                        <td data-label="Price">10</td>
-                                        <td data-label="Pay">10</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td rowspan="4" colspan="4">Grand total</td>
-                                        <td>18</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
+                        </thead>
+                        <tbody>
+                            <td data-label="ID">485659</td>
+                            <td data-label="Name"> Oppo</td>
+                            <td data-label="Descripton"> hello!</td>
+                            <td data-label="Edit" class="right__iconTable"><a href=""><img src="assets/icon-edit.svg" alt=""></a></td>
+                            <td data-label="Delete" class="right__iconTable"><a href=""><img src="assets/icon-trash-black.svg" alt=""></a></td>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
 <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
@@ -94,4 +46,4 @@
 <script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-storage.js"></script>
 
 
-</html>
+</html>                                                     

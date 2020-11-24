@@ -40,7 +40,7 @@ model.getOrdersData = async () => {
     model.ordersData = getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));;
     if (model.currentLocationScreen == 'homePage') {
         view.showDashBoard(model.ordersData);
-    }else{
+    }else if(model.currentLocationScreen == 'orderPage'){
         view.showOrderList(model.ordersData);
     }
 };
@@ -51,7 +51,6 @@ model.uploadImgToFirestorage = async (files) => {
     let imagePaths = [];
     images = [...files];
     for (let i = 0; i < images.length; i++) {
-        
         file = images[i];
         const name = "imgProduct" + file.name;
         const metadata = {
@@ -60,12 +59,9 @@ model.uploadImgToFirestorage = async (files) => {
         const task = await firebase.storage().ref().child(name).put(file, metadata);
         let path = await firebase.storage().ref().child(name).getDownloadURL();
         imagePaths.push(path);
-
         console.log(i);
     }
-    
     return imagePaths;
-    
 };
 
 model.addProduct =  (data) => {
@@ -92,12 +88,10 @@ model.removeProduct = (id)=>{
     });
 };
 
-model.updateStatusProduct= async (id,status)=>{
-    if(status){
-        await firebase.firestore().collection('products').doc(id).update({status:false});
-    }else {
-        await firebase.firestore().collection('products').doc(id).update({status:true});
-    }
+model.updateStatusProduct= async (id,value)=>{  
+
+    console.log(value);
+    await firebase.firestore().collection('products').doc(id).update({status:value});
     model.getProductsData();
 };
 
