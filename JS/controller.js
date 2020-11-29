@@ -13,7 +13,6 @@ controller.login = (data) => {
     }
     if (data.email !== '' && data.password !== '') {
         model.login(data);
-        
     };
 };
 

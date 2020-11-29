@@ -31,7 +31,13 @@ model.getUsersData = async () => {
     //đoạn này bóc tách dữ liệu từ db trả về
     const response = await firebase.firestore().collection("users").get()
     model.usersData = getDataFromDocs(response.docs);
-    model.getOrdersData()
+    model.usersData.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name > a.name) ? -1 : 0));
+
+    if (model.currentLocationScreen == 'customerPage') {
+        view.showCustomerList(model.usersData);
+    }
+
+    model.getOrdersData();
 
 };
 model.getOrdersData = async () => {
@@ -40,13 +46,12 @@ model.getOrdersData = async () => {
     model.ordersData = getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));;
     if (model.currentLocationScreen == 'homePage') {
         view.showDashBoard(model.ordersData);
-    }else if(model.currentLocationScreen == 'orderPage'){
+    } else if (model.currentLocationScreen == 'orderPage') {
         view.showOrderList(model.ordersData);
     }
 };
 
 model.uploadImgToFirestorage = async (files) => {
-    console.log('ok, cho ty!!!');
     let images = [];
     let imagePaths = [];
     images = [...files];
@@ -64,45 +69,47 @@ model.uploadImgToFirestorage = async (files) => {
     return imagePaths;
 };
 
-model.addProduct =  (data) => {
+model.addProduct = (data) => {
     const dataToCreate = {
         ...data,
         createAt: new Date().toISOString()
     }
-    console.log(dataToCreate);
     firebase.firestore().collection('products').doc().set(dataToCreate);
     return alert('Successful')
 };
 
-model.updateProduct =(id,data)=>{
-    firebase.firestore().collection('products').doc(id).update(data);
+model.update = async (id, data, collection) => {
+    await firebase.firestore().collection(collection).doc(id).update(data);
+    model.getOrdersData();
     return alert('Successful');
+
+
 }
-model.removeProduct = (id)=>{
+model.removeProduct = (id) => {
     console.log(id);
-    firebase.firestore().collection("products").doc(id).delete().then(function() {
+    firebase.firestore().collection("products").doc(id).delete().then(function () {
         console.log("Document successfully deleted!");
         model.getProductsData();
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.error("Error removing document: ", error);
     });
 };
 
-model.updateStatusProduct= async (id,value)=>{  
 
-    console.log(value);
-    await firebase.firestore().collection('products').doc(id).update({status:value});
+//function này update Status cho cả product và customer
+model.updateStatus = async (collection, id, value) => {
+    await firebase.firestore().collection(collection).doc(id).update({ status: value });
     model.getProductsData();
+    model.getUsersData();
 };
 
-model.updateStatusOrder = async (id,status)=>{
+// function này update Status cho Order
+model.updateStatusOrder = async (id, status) => {
     console.log(id);
     console.log(status);
-    await firebase.firestore().collection('orders').doc(id).update({status:status});
+    await firebase.firestore().collection('orders').doc(id).update({ status: status });
     model.getOrdersData();
 };
-
-
 
 
 //đoạn này lấy Data từ doc

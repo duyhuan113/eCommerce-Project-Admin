@@ -55,7 +55,7 @@ component.sideBar = `
                     </div>
                 </li>
                 <li class="left__menuItem">
-                    <a href="view_customers.html" class="left__title"><img src="assets/icon-users.svg" alt="">Customer</a>
+                    <a onclick="view.setScreenBtn('customerPage')" href="" class="left__title"><img src="assets/icon-users.svg" alt="">Customer</a>
                 </li>
                 <li class="left__menuItem">
                     <a onclick="view.setScreenBtn('orderPage')" class="left__title"><img src="assets/icon-book.svg" alt="">Order</a>
@@ -73,13 +73,16 @@ component.sideBar = `
             </ul>
         </div>
     </div>
+    <!-- div Loading -->
+                        <div id="loading" style=" display: none;">
+                            <div class="overLay"></div>
+                            <div class="loader"></div>
+                        </div>
 `;
 
 component.homePage = `
     <div class="wrapper">
-        <div class="container">
             <div id="dashBoard" class="dashboard">
-                
                 <div class="right">
                     <div class="right__content">
                         <div class="right__title">Dashboard</div>
@@ -128,15 +131,32 @@ component.homePage = `
                             <a onclick="view.setScreenBtn('orderPage')" class="right__tableMore"><p>View all order</p> <img src="assets/arrow-right-black.svg" alt=""></a>
                         </div>
                     </div>
+                    <!-- div Update, div này bị bẩn -->
+                    <div id="myModal" class="modal">
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                            <div class="right__title">Edit Product Information</div>
+                                <span id="closeBtn" class="close">&times;</span>
+                                <div class="right">
+                                    <div class="right__content">
+                                        <div id="mainInformation" class="information">
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        
     </div>
 `;
 
 component.productPage = `
 <div class="wrapper">
-    <div class="container">
+    
         <div id="dashBoard" class="dashboard">
             <div class="right">
                 <div class="right__content">
@@ -196,27 +216,26 @@ component.productPage = `
 
 component.addProduct = `
 <div class="wrapper">
-        <div class="container">
             <div id="dashBoard" class="dashboard">
                 <div class="right">
                     <div class="right__content">
                         <div class="right__title">Dashboard</div>
                         <p class="right__desc">Insert product</p>
                         <div class="right__formWrapper">
-                            <form id="addProductForm"   >
+                            <form id="addProductForm"  action="" method="POST" >
                                 <div class="right__inputWrapper">
                                     <label for="p_category">Name</label>
-                                    <input type="text" name="name" placeholder="Name">
+                                    <input type="text" name="name" placeholder="Name" required>
                                     <div class="error" id="name-error"></div>
                                 </div>
                                 <div class="right__inputWrapper">
                                     <label for="title">Category</label>
-                                    <input type="text" name="category" placeholder="Category">
+                                    <input type="text" name="category" placeholder="Category" required>
                                     <div class="error" id="category-error"></div>
                                 </div>
                                 <div class="right__inputWrapper">
                                     <label for="title">Price</label>
-                                    <input type="text" name="price" placeholder="Price">
+                                    <input type="text" name="price" placeholder="Price" required>
                                     <div class="error" id="price-error"></div>
                                 </div>
                                 <div class="right__inputWrapper">
@@ -276,7 +295,7 @@ component.addProduct = `
                                 </div>
                                 <div class="right__inputWrapper">
                                     <label for="title">Release Date</label>
-                                    <input type="text" name="releaseDate" placeholder="Release Date">
+                                    <input type="text" name="releaseDate" placeholder="Release Date" required>
                                     <div class="error" id="releaseDate-error"></div>
                                 </div>
                                 <div class="right__inputWrapper">
@@ -291,23 +310,23 @@ component.addProduct = `
                                 </div>
                                 <div class="right__inputWrapper">
                                     <label for="desc">Description</label>
-                                    <textarea id="" cols="30" rows="10" name="des"
-                                        placeholder="Description"></textarea>
+                                    <textarea id="" cols="30" rows="10" name="des"  
+                                        placeholder="Description" required></textarea>
                                 </div>
                         </form>
                         <button id="addBtn" class="btn" >Add</button>
                         </div>
+                        
                     </div>
                 </div>
             </div>
-        </div>
+        
     </div>
 `;
 
 
-component.orderPage =`
+component.orderPage = `
 <div class="wrapper">
-    <div class="container">
         <div id="dashBoard" class="dashboard">
             <div class="right">
                 <div class="right__content">
@@ -349,22 +368,97 @@ component.orderPage =`
             </div>
         </div>
     </div>
-        <!-- div Update, div này bị bẩn -->
-        <div id="myModal" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <div class="right__title">Edit Product Information</div>
-                    <span id="closeBtn" class="close">&times;</span>
-                    <div class="right">
-                        <div class="right__content">
-                            <div id="mainInformation" class="information">
-                                
-                            </div>
+     
+    <!-- div Update, div này bị bẩn -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="right__title">Edit Product Information</div>
+                <span id="closeBtn" class="close">&times;</span>
+                <div class="right">
+                    <div class="right__content">
+                        <div id="mainInformation" class="information">
                             
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- div Loading -->
+    <div id="loading" style=" display: none;">
+        <div class="overLay"></div>
+        <div class="loader"></div>
+    </div>
+</div>
+`;
+
+component.customerPage = `
+<div class="wrapper">
+        <div id="dashBoard" class="dashboard">
+            <div class="right">
+                <div class="right__content">
+                    <div class="right__title">Dashboard</div>
+                    <p class="right__desc">View Customer</p>
+                    <div class="right__table">
+                        <div class="topnav">
+                            <form>
+                                <input id="inputSearch" type="text" placeholder="Search...">
+                                <button id="btnSearch" >Search</button>
+                            </form>
+                        </div>
+                        <div class="right__tableWrapper">
+                        <div class="right__tableWrapper">
+                            <table width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Username</th>
+                                        <th>Name</th>
+                                        <th>Orders</th>
+                                        <th>MemberShip</th>
+                                        <th>Banned</th>
+                                        <th>View</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th> 
+                                    </tr>
+                                </thead>
+                                <tbody id="customer_tbody">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+     
+    <!-- div Update, div này bị bẩn -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="right__title">Edit Product Information</div>
+                <span id="closeBtn" class="close">&times;</span>
+                <div class="right">
+                    <div class="right__content">
+                        <div id="mainInformation" class="information">
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- div Loading -->
+    <div id="loading" style=" display: none;">
+        <div class="overLay"></div>
+        <div class="loader"></div>
+    </div>
 </div>
 `;

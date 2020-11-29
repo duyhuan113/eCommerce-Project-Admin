@@ -21,12 +21,9 @@ window.onload = () => {
                 email: user.email,
             }
             if (user.emailVerified) {
-                
                 if(!model.currentLocationScreen)   {
-                    
                     view.setActiveScreen('homePage');
                 }else{
-                    
                     view.setActiveScreen(model.currentLocationScreen);
                 }
             } else {

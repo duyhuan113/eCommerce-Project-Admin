@@ -15,19 +15,19 @@ view.setActiveScreen = (screenName) => {
             });
             break;
         case 'homePage':
-            document.getElementById('app').innerHTML = component.homePage;
+            document.getElementById('app').innerHTML += component.homePage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             model.getProductsData();
             break;
         case 'productPage':
-            document.getElementById('app').innerHTML = component.productPage;
+            document.getElementById('app').innerHTML += component.productPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             model.getProductsData();
             view.searchByName();
 
             break;
         case 'addProduct':
-            document.getElementById('app').innerHTML = component.addProduct;
+            document.getElementById('app').innerHTML += component.addProduct;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             const addBtn = document.getElementById('addBtn');
             addBtn.addEventListener('click', () => {
@@ -35,41 +35,41 @@ view.setActiveScreen = (screenName) => {
             });
             break;
         case 'orderPage':
-            document.getElementById('app').innerHTML = component.orderPage;
+            document.getElementById('app').innerHTML += component.orderPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             model.getOrdersData();
+            view.searchByName();
             break;
+        case 'customerPage':
+            document.getElementById('app').innerHTML += component.customerPage;
+            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            model.getUsersData();
+            view.searchByName();
+            break;
+
     }
 };
 
 
+// function này 
 view.showDashBoard = (data) => {
     const productCardNumber = document.getElementById('productCardNumber');
     const userCardNumber = document.getElementById('userCardNumber');
     const orderCardNumber = document.getElementById('orderCardNumber');
     const orderTable = document.getElementById('orders_tbody');
     let ordersData = data;
-
     productCardNumber.innerHTML = model.productsData.length;
     userCardNumber.innerHTML = model.usersData.length;
     orderCardNumber.innerHTML = ordersData.length;
-
-
+    orderTable.innerHTML = '';
     for (let i = 0; i < 5; i++) {
-        orderTable.innerHTML += view.htmlOrderList(ordersData[i]);
-    }
 
+        orderTable.innerHTML += view.htmlOrderList(ordersData[i], i);
+        view.setStatusOrder(ordersData[i], i)
+    }
 };
 
-
-
-
-
-
-
-
-
-// html
+// html==========================================================================================================
 view.htmlOrderList = (data, i) => {
     let html = `
     <tr>
@@ -84,52 +84,56 @@ view.htmlOrderList = (data, i) => {
             <a href="" class="right__iconTable"><img src="assets/icon-check.svg" alt=""></a>
             <a href="" class="right__iconTable"><img src="assets/icon-x.svg" alt=""></a>
         </td>
-        <td data-label="Detail" class="right__iconTable" onclick="view.showDetailOrder(${i},'view')"><img src="assets/eye.png" alt=""></td>
-        <td data-label="Edit" class="right__iconTable" onclick="view.showDetailOrder(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
+        <td data-label="Detail" class="right__iconTable" onclick="view.showOrder(${i},'view')"><img src="assets/eye.png" alt=""></td>
+        <td data-label="Edit" class="right__iconTable" onclick="view.showOrder(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
         <td data-label="Delete" class="right__iconTable" onclick="model.removeOrder('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html
 };
-view.showDetailOrder = (index, option) => {
-    let data = model.ordersData;
-    let dataItems = data[index].items
 
-    const mainInformation = document.getElementById('mainInformation');
-    // Get the modal
-    let modal = document.getElementById("myModal");
-    // Get the <span> element that closes the modal
-    const closeBtn = document.getElementById('closeBtn');
-    // When the user clicks the button, open the modal 
-    modal.style.display = "block";
-    // When the user clicks on <span> (x), close the modal
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = "none";
-    });
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    };
+view.htmlInputOrder = (data) => {
+    html = `
+    <form id="updateForm">
+        <div class="right__inputWrapper">
+            <label for="p_name">Name</label>
+            <input type="text" name="name" placeholder="Name" value="${data.name}">
+            <div class="error" id="name-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Phone</label>
+            <input type="text" name="phone" placeholder="Category" value="${data.phone}">
+            <div class="error" id="phone-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Email</label>
+            <input type="text" name="email" placeholder="Email" value="${data.email}">
+            <div class="error" id="email-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="category">Address</label>
+            <input type="text" name="address" placeholder="Address" value="${data.address}">
+            <div class="error" id="address-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Note</label>
+            <input type="text" name="note" placeholder="Quantity" value="${data.note}">
+            <div class="error" id="note-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Status</label>
+            <select id="statusDetailOrder" >
+                <option value="wait">Wait</option>
+                <option value="confirm" >Confirm</option>
+                <option value="cancel">Cancel</option>
+            </select>
+            <div class="error" id="status-error"></div>
+        </div>
+    </form>
+    <button id="addBtn" class="btn" disabled >Update</button>
+ `;
+    return html;
+}
 
-    if (option == 'view') {
-        mainInformation.innerHTML = view.htmlDetailOrder(data[index]);
-        const tbody_itemOrder = document.getElementById('tbody_itemOrder');
-        for (let i = 0; i < dataItems.length; i++) {
-            tbody_itemOrder.innerHTML += `
-            <tr>
-                <td data-label="Product ID">${dataItems[i].id}</td>
-                <td data-label="Product Name">${dataItems[i].name}</td>
-                <td data-label="Quantity">${dataItems[i].inCart}</td>
-                <td data-label="Price">${dataItems[i].price}</td>
-                <td data-label="Pay">${dataItems[i].inCart * dataItems[i].price} $</td>
-            </tr>`;
-        }
-    } else if (option == 'update') {
-        mainInformation.innerHTML = view.htmlInputProduct(data[index]);
-        //view.listenEventUpdate(index);
-    }
-};
 view.htmlProductList = (data, i) => {
     html = `
     <tr>
@@ -143,8 +147,8 @@ view.htmlProductList = (data, i) => {
             <span class="slider"></span>
         </label>
         </td>
-        <td data-label="Detail" class="right__iconTable" onclick="view.showDetailProduct(${i},'view')"><img src="assets/eye.png" alt=""></td>
-        <td data-label="Edit" class="right__iconTable" onclick="view.showDetailProduct(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
+        <td data-label="Detail" class="right__iconTable" onclick="view.showProduct(${i},'view')"><img src="assets/eye.png" alt=""></td>
+        <td data-label="Edit" class="right__iconTable" onclick="view.showProduct(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
         <td data-label="Delete" class="right__iconTable" onclick="model.removeProduct('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html;
@@ -201,7 +205,7 @@ view.htmlDetailProduct = (data) => {
 
 view.htmlInputProduct = (data) => {
     const html = ` 
-    <form id="updateProductForm">
+    <form id="updateForm">
         <div class="right__inputWrapper">
             <label for="p_name">Name</label>
             <input type="text" name="name" placeholder="Name" value="${data.name}">
@@ -368,7 +372,12 @@ view.htmlDetailOrder = (data) => {
     return html;
 };
 
+//html============================================================================================================
+
+
 //function của Product
+
+
 view.showProductList = (data) => {
     const itemTbody = document.getElementById('item_tbody');
     const status = document.getElementsByClassName('switch');
@@ -376,9 +385,9 @@ view.showProductList = (data) => {
     for (let i = 0; i < data.length; i++) {
         itemTbody.innerHTML += view.htmlProductList(data[i], i);
         if (data[i].status) {
-            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatusProduct('${data[i].id}',false)" type="checkbox" checked>`);
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatus('products','${data[i].id}',false)" type="checkbox" checked>`);
         } else {
-            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatusProduct('${data[i].id}',true)" type="checkbox" >`);
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatus('products','${data[i].id}',true)" type="checkbox" >`);
         }
     };
 };
@@ -410,7 +419,9 @@ view.addProduct = async () => {
     };
     if (files.length >= 3) {
         if (controller.validateForm(data)) {
+            document.getElementById('loading').style.display = 'block';
             let img = await model.uploadImgToFirestorage(files);
+            document.getElementById('loading').style.display = 'none';
             data.img = [...img];
             model.addProduct(data);
         }
@@ -419,7 +430,7 @@ view.addProduct = async () => {
     }
 };
 
-view.showDetailProduct = (index, option) => {
+view.showProduct = (index, option) => {
 
     let productsData = model.productsData;
     const mainInformation = document.getElementById('mainInformation');
@@ -444,46 +455,33 @@ view.showDetailProduct = (index, option) => {
         mainInformation.innerHTML = view.htmlDetailProduct(productsData[index]);
     } else if (option == 'update') {
         mainInformation.innerHTML = view.htmlInputProduct(productsData[index]);
-        view.listenEventUpdate(index);
+        view.listenEventUpdate(index, 'product');
     }
-};
-
-view.listenEventUpdate = (index) => {
-    let productsData = model.productsData;
-    const addBtn = document.getElementById('addBtn');
-    let updateProductForm = document.getElementById('updateProductForm');
-    updateProductForm.addEventListener('change', (e) => {
-        addBtn.disabled = false;
-        addBtn.addEventListener('click', () => {
-            view.updateProduct(productsData[index]);
-            addBtn.disabled = true;
-        });
-    });
 };
 
 view.updateProduct = async (data) => {
     let files = document.querySelector("#photo").files;
-    const updateProductForm = document.getElementById('updateProductForm');
+    const updateForm = document.getElementById('updateForm');
     const dataToUpdate = {
-        name: updateProductForm.name.value,
-        category: updateProductForm.category.value,
-        price: updateProductForm.price.value,
-        color: updateProductForm.color.value,
-        availableQuantity: updateProductForm.quantity.value,
+        name: updateForm.name.value,
+        category: updateForm.category.value,
+        price: updateForm.price.value,
+        color: updateForm.color.value,
+        availableQuantity: updateForm.quantity.value,
         detail: {
-            rearCam: updateProductForm.rearCam.value,
-            fontCam: updateProductForm.fontCam.value,
-            ram: updateProductForm.ram.value,
-            capacity: updateProductForm.category.value,
-            os: updateProductForm.os.value,
-            chip: updateProductForm.chip.value,
-            display: updateProductForm.display.value,
-            battery: updateProductForm.battery.value,
-            inTheBox: updateProductForm.inTheBox.value,
-            releaseDate: updateProductForm.releaseDate.value,
+            rearCam: updateForm.rearCam.value,
+            fontCam: updateForm.fontCam.value,
+            ram: updateForm.ram.value,
+            capacity: updateForm.category.value,
+            os: updateForm.os.value,
+            chip: updateForm.chip.value,
+            display: updateForm.display.value,
+            battery: updateForm.battery.value,
+            inTheBox: updateForm.inTheBox.value,
+            releaseDate: updateForm.releaseDate.value,
         },
-        video: updateProductForm.video.value,
-        des: updateProductForm.des.value,
+        video: updateForm.video.value,
+        des: updateForm.des.value,
     };
 
     if (controller.validateForm(dataToUpdate)) {
@@ -492,23 +490,29 @@ view.updateProduct = async (data) => {
         } else if (files.length == 0) {
             dataToUpdate.img = [...data.img];
         } else {
+            document.getElementById('loading').style.display = 'block';
             let img = await model.uploadImgToFirestorage(files);
             dataToUpdate.img = [...img];
+            document.getElementById('loading').style.display = 'none'
         }
     }
-    model.updateProduct(data.id, dataToUpdate)
+    model.update(data.id, dataToUpdate, 'products')
 };
 
 //đoạn này search
 view.searchByName = () => {
     const inputSearch = document.getElementById('inputSearch');
-
     inputSearch.addEventListener('input', () => {
-        view.filterByName(inputSearch.value)
-        //console.log(inputSearch.value);
+        if (model.currentLocationScreen == 'productPage') {
+            view.filterProduct(inputSearch.value);
+        } else if (model.currentLocationScreen == 'orderPage') {
+            view.filterOrder(inputSearch.value);
+        }
     })
 };
-view.filterByName = (keyValue) => {
+
+// function này filter keyvalue và trả về sản phẩm có tên hoặc category có chứa kí tự trùng với keyvalue
+view.filterProduct = (keyValue) => {
     // lọc theo tên và category
     let data = model.productsData;
     let filterData = data.filter(item => {
@@ -519,38 +523,189 @@ view.filterByName = (keyValue) => {
     view.showProductList(filterData);
 };
 
+view.filterOrder = (keyValue) => {
+    // lọc theo tên và category
+    let data = model.ordersData;
+    let filterData = data.filter(item => {
+        return item.name.toLowerCase().includes(keyValue.toLowerCase()) || item.id.toLowerCase().includes(keyValue.toLowerCase())
+    })
+    //sắp xếp alphabet
+    filterData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+    view.showOrderList(filterData);
+};
+
+
 // function cua order
 view.showOrderList = (data) => {
-    let orderConfirm = document.getElementsByClassName('orderConfirm');
     let comfirmBtn = document.getElementById('comfirmBtn');
     const orderTable = document.getElementById('orders_tbody');
     orderTable.innerHTML = ``;
     for (let i = 0; i < data.length; i++) {
         orderTable.innerHTML += view.htmlOrderList(data[i], i);
-
+        view.setStatusOrder(data[i], i)
         //đoạn này set status của order
-        if (data[i].status == 'confirm') {
-            orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-check.svg" alt=""></a>`;
-            orderConfirm[i].style.backgroundColor = '#8BF556';
-        } else if (data[i].status == 'cancel') {
-            orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-x.svg" alt=""></a>`;
-            orderConfirm[i].style.backgroundColor = '#F27C94';
-        } else if (data[i].status == 'wait') {
-            orderConfirm[i].innerHTML = `
-            <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data[i].id}','confirm')"><img src="assets/icon-check.svg" alt=""></a>
-            <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data[i].id}','cancel')"><img src="assets/icon-x.svg" alt=""></a>`;
+
+    };
+};
+
+// function đoạn này show ra trạng thái của đơn hàng ở dashboard
+view.setStatusOrder = (data, i) => {
+    let orderConfirm = document.getElementsByClassName('orderConfirm');
+    if (data.status == 'confirm') {
+        orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-check.svg" alt=""></a>`;
+        orderConfirm[i].style.backgroundColor = '#8BF556';
+    } else if (data.status == 'cancel') {
+        orderConfirm[i].innerHTML = `<a  class="right__iconTable"><img src="assets/icon-x.svg" alt=""></a>`;
+        orderConfirm[i].style.backgroundColor = '#F27C94';
+    } else if (data.status == 'wait') {
+        orderConfirm[i].innerHTML = `
+        <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data.id}','confirm')"><img src="assets/icon-check.svg" alt=""></a>
+        <a class="comfirmBtn right__iconTable" onclick="model.updateStatusOrder('${data.id}','cancel')"><img src="assets/icon-x.svg" alt=""></a>`;
+    }
+
+};
+
+// đoạn này là popup của Detail Order
+view.showOrder = (index, option) => {
+    let data = model.ordersData;
+    let dataItems = data[index].items
+    const mainInformation = document.getElementById('mainInformation');
+    // Get the modal
+    let modal = document.getElementById("myModal");
+    // Get the <span> element that closes the modal
+    const closeBtn = document.getElementById('closeBtn');
+    // When the user clicks the button, open the modal 
+    modal.style.display = "block";
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = "none";
+    });
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    if (option == 'view') {
+        mainInformation.innerHTML = view.htmlDetailOrder(data[index]);
+        const tbody_itemOrder = document.getElementById('tbody_itemOrder');
+        for (let i = 0; i < dataItems.length; i++) {
+            tbody_itemOrder.innerHTML += `
+            <tr>
+                <td data-label="Product ID">${dataItems[i].id}</td>
+                <td data-label="Product Name">${dataItems[i].name}</td>
+                <td data-label="Quantity">${dataItems[i].inCart}</td>
+                <td data-label="Price">${dataItems[i].price}</td>
+                <td data-label="Pay">${dataItems[i].inCart * dataItems[i].price} $</td>
+            </tr>`;
+        }
+    } else if (option == 'update') {
+        mainInformation.innerHTML = view.htmlInputOrder(data[index]);
+        view.setOptionStatus(data[index].status);
+        view.listenEventUpdate(index);
+    }
+};
+
+//function này lắng nghe sự kiện nút update đc ấn hay chưa
+view.listenEventUpdate = (index, collection) => {
+    let productsData = model.productsData;
+    let ordersData = model.ordersData;
+    const addBtn = document.getElementById('addBtn');
+    let updateForm = document.getElementById('updateForm');
+    updateForm.addEventListener('change', (e) => {
+        addBtn.disabled = false;
+        addBtn.addEventListener('click', () => {
+            if (collection == 'product') {
+                view.updateProduct(productsData[index]);
+            } else {
+                view.updateOrder(ordersData[index]);
+            }
+            addBtn.disabled = true;
+        });
+    });
+};
+
+// function này lấy các giá trị input từ UpdateForm 
+view.updateOrder = (data) => {
+    const updateForm = document.getElementById('updateForm');
+    let option = document.getElementsByTagName("option");
+
+    const dataToUpdate = {
+        name: updateForm.name.value,
+        phone: updateForm.phone.value,
+        email: updateForm.email.value,
+        note: updateForm.note.value,
+        address: updateForm.address.value,
+    };
+
+    for (let i = 0; i < option.length; i++) {
+        if (option[i].selected == true) {
+            dataToUpdate.status = option[i].value;
+        };
+    }
+    model.update(data.id, dataToUpdate, 'orders')
+};
+
+// function này set trạng thái hiện tại của đơn hàng trong Detail Order 
+view.setOptionStatus = (status) => {
+    let option = document.getElementsByTagName("option");
+    for (let i = 0; i < option.length; i++) {
+        if (option[i].value == status) {
+            option[i].defaultSelected = true;
+        }
+    };
+}
+
+//CUSTOMER===================================================================================================================
+
+// function này show ra danh sách khách hàng
+view.showCustomerList = (data) => {
+    console.log(data);
+    const itemTbody = document.getElementById('customer_tbody');
+    const status = document.getElementsByClassName('switch');
+    itemTbody.innerHTML = ''
+    for (let i = 0; i < data.length; i++) {
+        itemTbody.innerHTML += view.htmlCustomerList(data[i], i);
+        if (data[i].status) {
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatus('users','${data[i].id}',false)" type="checkbox" checked>`);
+        } else {
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatus('users','${data[i].id}',true)" type="checkbox" >`);
         }
     };
 };
 
+view.htmlCustomerList = (data, i) => {
+    html = `
+    <tr>
+        <td>${i + 1}</td>
+        <td data-label="">${data.id}</td>
+        <td data-label=""> ${data.name}</td>
+        <td data-label="">${data.createdOrders}</td>
+        <td data-label="">${data.memberShip}$</td>
+        <td data-label="">    
+        <label class="switch">
+            <span class="slider"></span>
+        </label>
+        </td>
+        <td data-label="Detail" class="right__iconTable" onclick="view.showProduct(${i},'view')"><img src="assets/eye.png" alt=""></td>
+        <td data-label="Edit" class="right__iconTable" onclick="view.showProduct(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
+        <td data-label="Delete" class="right__iconTable" onclick="model.removeProduct('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
+    </tr>
+     `;
+    return html
+}
+// ==========================================================================================================================
 
 
+
+// function này set Màn hình hiện tại
 view.setScreenBtn = (value) => {
-
     localStorage.setItem('currentLocationScreen', value);
     location.reload();
 };
 
+// function này k cần chú thích
 view.signOutButton = () => {
     firebase.auth().signOut();
     model.currentUser = {};
@@ -558,10 +713,12 @@ view.signOutButton = () => {
     model.productData = [];
 };
 
+// đoạn này in ra lỗi mỗi khi đoạn input có vấn đề
 view.setErrorMessage = (elementId, content) => {
     document.getElementById(elementId).innerText = content;
 };
 
+// function này copy trên mạng
 function formatDate(input) {
     var date = new Date(input);
     return [
@@ -571,9 +728,10 @@ function formatDate(input) {
     ].join('/');
 };
 
+// function này tính tổng hóa đơn
 function getQuantity(data) {
-    var total = 0;
-    for (var i = 0; i < data.items.length; i++) {
+    let total = 0;
+    for (let i = 0; i < data.items.length; i++) {
         total = total + data.items[i].inCart;
     }
     return total;
