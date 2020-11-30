@@ -51,6 +51,13 @@ model.getOrdersData = async () => {
     }
 };
 
+//function này lấy order by id 
+model.getOrdersDatabyId = async (id) => {
+    const response = await firebase.firestore().collection("orders").where("email", "==", id).get()
+    return getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));
+};
+
+
 model.uploadImgToFirestorage = async (files) => {
     let images = [];
     let imagePaths = [];
@@ -80,16 +87,17 @@ model.addProduct = (data) => {
 
 model.update = async (id, data, collection) => {
     await firebase.firestore().collection(collection).doc(id).update(data);
-    model.getOrdersData();
+    model.getProductsData();
     return alert('Successful');
 
 
 }
-model.removeProduct = (id) => {
+model.removeItem = (collection, id) => {
     console.log(id);
-    firebase.firestore().collection("products").doc(id).delete().then(function () {
+    firebase.firestore().collection(collection).doc(id).delete().then(function () {
         console.log("Document successfully deleted!");
         model.getProductsData();
+        model.getUsersData()
     }).catch(function (error) {
         console.error("Error removing document: ", error);
     });

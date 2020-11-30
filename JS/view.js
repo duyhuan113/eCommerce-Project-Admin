@@ -149,7 +149,7 @@ view.htmlProductList = (data, i) => {
         </td>
         <td data-label="Detail" class="right__iconTable" onclick="view.showProduct(${i},'view')"><img src="assets/eye.png" alt=""></td>
         <td data-label="Edit" class="right__iconTable" onclick="view.showProduct(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
-        <td data-label="Delete" class="right__iconTable" onclick="model.removeProduct('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
+        <td data-label="Delete" class="right__iconTable" onclick="model.removeItem('products','${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html;
 };
@@ -392,6 +392,7 @@ view.showProductList = (data) => {
     };
 };
 
+
 view.addProduct = async () => {
     let files = document.querySelector("#photo").files;
     const addProductForm = document.getElementById('addProductForm');
@@ -430,8 +431,8 @@ view.addProduct = async () => {
     }
 };
 
+// function nay show ra popup cua Detail san pham
 view.showProduct = (index, option) => {
-
     let productsData = model.productsData;
     const mainInformation = document.getElementById('mainInformation');
     // Get the modal
@@ -516,7 +517,7 @@ view.filterProduct = (keyValue) => {
     // lọc theo tên và category
     let data = model.productsData;
     let filterData = data.filter(item => {
-        return item.name.toLowerCase().includes(keyValue.toLowerCase()) || item.category.toLowerCase().includes(keyValue.toLowerCase())
+        return item.name.toLowerCase().includes(keyValue.toLowerCase()) || item.category.toLowerCase().includes(keyValue.toLowerCase()) || item.id.toLowerCase().includes(keyValue.toLowerCase())
     })
     //sắp xếp alphabet
     filterData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
@@ -527,7 +528,7 @@ view.filterOrder = (keyValue) => {
     // lọc theo tên và category
     let data = model.ordersData;
     let filterData = data.filter(item => {
-        return item.name.toLowerCase().includes(keyValue.toLowerCase()) || item.id.toLowerCase().includes(keyValue.toLowerCase())
+        return item.name.toLowerCase().includes(keyValue.toLowerCase()) || item.id.toLowerCase().includes(keyValue.toLowerCase()) || item.email.toLowerCase().includes(keyValue.toLowerCase())
     })
     //sắp xếp alphabet
     filterData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
@@ -611,20 +612,51 @@ view.showOrder = (index, option) => {
 view.listenEventUpdate = (index, collection) => {
     let productsData = model.productsData;
     let ordersData = model.ordersData;
+    let customersData = model.usersData
     const addBtn = document.getElementById('addBtn');
     let updateForm = document.getElementById('updateForm');
-    updateForm.addEventListener('change', (e) => {
+    updateForm.addEventListener('change', () => {
+       
+        // đoạn này modify nút update
         addBtn.disabled = false;
+
         addBtn.addEventListener('click', () => {
+            addBtn.disabled = true;
             if (collection == 'product') {
                 view.updateProduct(productsData[index]);
-            } else {
+            } else if (collection == 'order') {
                 view.updateOrder(ordersData[index]);
+            } else if (collection == 'customer') {
+                view.updateCustomer(customersData[index])
             }
-            addBtn.disabled = true;
+            
         });
+        addBtn.disabled = false;
     });
 };
+
+view.updateCustomer = (data) => {
+    const updateForm = document.getElementById('updateForm');
+
+    const dataToUpdate = {
+        name: updateForm.name.value,
+        dob: updateForm.dob.value,
+        gender: updateForm.gender.value,
+        phone: updateForm.phone.value,
+        address: updateForm.address.value,
+        password: updateForm.password.value
+    };
+    
+   if(view.checkInvalidDate(updateForm.dob.value)) {
+       console.log(dataToUpdate);
+    }
+
+    model.update(data.id, dataToUpdate, 'users')
+
+    
+}
+
+
 
 // function này lấy các giá trị input từ UpdateForm 
 view.updateOrder = (data) => {
@@ -661,18 +693,60 @@ view.setOptionStatus = (status) => {
 
 // function này show ra danh sách khách hàng
 view.showCustomerList = (data) => {
-    console.log(data);
+
     const itemTbody = document.getElementById('customer_tbody');
     const status = document.getElementsByClassName('switch');
-    itemTbody.innerHTML = ''
+    itemTbody.innerHTML = '';
     for (let i = 0; i < data.length; i++) {
         itemTbody.innerHTML += view.htmlCustomerList(data[i], i);
         if (data[i].status) {
-            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatus('users','${data[i].id}',false)" type="checkbox" checked>`);
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" type="checkbox" onclick="model.updateStatus('users','${data[i].id}',false)" checked>`);
         } else {
-            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" onclick="model.updateStatus('users','${data[i].id}',true)" type="checkbox" >`);
+            status[i].insertAdjacentHTML('afterbegin', `<input class="inputStatus" type="checkbox" onclick="model.updateStatus('users','${data[i].id}',true)">`);
         }
     };
+};
+
+view.showCustomer = async (index, option) => {
+    let data = model.usersData;
+    const mainInformation = document.getElementById('mainInformation');
+    // Get the modal
+    let modal = document.getElementById("myModal");
+    // Get the <span> element that closes the modal
+    const closeBtn = document.getElementById('closeBtn');
+    // When the user clicks the button, open the modal 
+    modal.style.display = "block";
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = "none";
+    });
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    if (option == 'view') {
+        mainInformation.innerHTML = view.htmlDetailCustomer(data[index]);
+        const itemOrder = document.getElementById('tbody_itemOrder');
+        const dataOrderOfCustomer = await model.getOrdersDatabyId(data[index].email);
+
+        for (let i = 0; i < dataOrderOfCustomer.length; i++) {
+            itemOrder.innerHTML += `
+            <tr>
+                <td>${i + 1}</td>
+                <td data-label="">${dataOrderOfCustomer[i].id}</td>
+                <td data-label="">${dataOrderOfCustomer[i].createAt}</td>
+                <td data-label="">${dataOrderOfCustomer[i].status}</td>
+                <td data-label="">${dataOrderOfCustomer[i].total} $</td>
+            </tr>`;
+        }
+    } else if (option == 'update') {
+
+        mainInformation.innerHTML = view.htmlInputCustomer(data[index]);
+        view.listenEventUpdate(index, 'customer');
+    }
 };
 
 view.htmlCustomerList = (data, i) => {
@@ -682,19 +756,108 @@ view.htmlCustomerList = (data, i) => {
         <td data-label="">${data.id}</td>
         <td data-label=""> ${data.name}</td>
         <td data-label="">${data.createdOrders}</td>
-        <td data-label="">${data.memberShip}$</td>
+        <td data-label="">${data.memberShip} point</td>
         <td data-label="">    
-        <label class="switch">
-            <span class="slider"></span>
-        </label>
+            <label class="switch">
+                <span class="slider"></span>
+            </label>
         </td>
-        <td data-label="Detail" class="right__iconTable" onclick="view.showProduct(${i},'view')"><img src="assets/eye.png" alt=""></td>
-        <td data-label="Edit" class="right__iconTable" onclick="view.showProduct(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
-        <td data-label="Delete" class="right__iconTable" onclick="model.removeProduct('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
-    </tr>
-     `;
+        <td data-label="Detail" class="right__iconTable" onclick="view.showCustomer(${i},'view')"><img src="assets/eye.png" alt=""></td>
+        <td data-label="Edit" class="right__iconTable" onclick="view.showCustomer(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
+        <td data-label="Delete" class="right__iconTable" onclick="model.removeItem('users','${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
+    </tr>`;
+    return html;
+};
+
+view.htmlInputCustomer = (data) => {
+    html = `
+    <form id="updateForm">
+        <div class="right__inputWrapper">
+            <label for="p_name">Name</label>
+            <input type="text" name="name" placeholder="Name" value="${data.name}">
+            <div class="error" id="name-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Date of Birth</label>
+            <input type="date" name="dob" value ="${data.dob}" >
+            <div class="error" id="dob-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Gender</label>
+            <input type="text" name="gender" placeholder="Gender" value="${data.gender}">
+            <div class="error" id="gender-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="category">Phone</label>
+            <input type="text" name="phone" placeholder="Phone" value="${data.phone}">
+            <div class="error" id="phone-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Address</label>
+            <input type="text" name="address" placeholder="Address" value="${data.address}">
+            <div class="error" id="address-error"></div>
+        </div>
+        <div class="right__inputWrapper">
+            <label for="title">Password</label>
+            <input type="password" name="password" placeholder="Password" value="${data.password}">
+            <div class="error" id="password-error"></div>
+        </div>
+    </form>
+    <button id="addBtn" class="btn" disabled >Update</button>`;
     return html
-}
+};
+
+view.htmlDetailCustomer = (data) => {
+    html = `
+        <div class="img_pro">
+        <img src="${data.avatar}" alt="">
+        </div>
+        <div class="main_infor">
+            <div class="infro_detail">
+                <h1>${data.email}</h1>
+            </div>
+            <div class="infro_detail">
+                <label><b>Name: </b></label><span>${data.name}</span>
+            </div>
+            <div class="infro_detail">
+                <label><b>Date of Birth: </b></label><span>${data.dob}</span>
+            </div>
+            <div class="infro_detail">
+                <label> <b>Gender:</b></label><span>${data.gender}</span>
+            </div>
+            <div class="infro_detail">
+                <label> <b>Phone:</b> </label> <span class="price">${data.phone}$</span>
+            </div>
+            <div class="infro_detail">
+                <label><b> Address: </b></label><span>${data.address}, ${data.city}</span>
+            </div>
+            <div class="infro_detail">
+                <label><b> MemberShip: </b></label><span>${data.memberShip} Point</span>
+            </div>
+            <div class="infro_detail">
+                <label><b> Orders: </b></label>
+                <div class="donhang">
+                    <table width="100%">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th width="200px">Order ID</th>
+                                <th>Created At</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id ="tbody_itemOrder">
+                            <!--JS CODE  -->    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>`;
+    return html;
+};
+
 // ==========================================================================================================================
 
 
@@ -738,3 +901,13 @@ function getQuantity(data) {
 }
 
 
+// function này bắt lỗi xem ng dùng có nhập sai ngày ( giá trị nhập vào lớn hơn thời điểm hiện tại)
+view.checkInvalidDate = (inputDate) => {
+    let inpDate = new Date(inputDate);
+    let currDate = new Date();
+    if (inpDate.setHours(0, 0, 0, 0) >= currDate.setHours(0, 0, 0, 0)) {
+        return view.setErrorMessage('dob-error','Invalid Date')
+    }else{
+        return true
+    }
+}

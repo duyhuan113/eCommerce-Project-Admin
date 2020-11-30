@@ -9,7 +9,28 @@
 </head>
 
 <body>
-    
+    <div class="donhang">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th width="200px">No.</th>
+                    <th width="200px">Order ID</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id ="tbody_itemOrder">
+                
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td rowspan="4" colspan="4">Grand Total</td>
+                    <td>${data.total} $</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </body>
 
 </html>
