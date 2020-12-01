@@ -87,8 +87,10 @@ model.addProduct = (data) => {
 
 model.update = async (id, data, collection) => {
     await firebase.firestore().collection(collection).doc(id).update(data);
+    model.getOrdersData();
     model.getProductsData();
-    return alert('Successful');
+    model.getUsersData();
+    
 
 
 }

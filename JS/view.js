@@ -88,7 +88,7 @@ view.htmlOrderList = (data, i) => {
         <td data-label="Edit" class="right__iconTable" onclick="view.showOrder(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
         <td data-label="Delete" class="right__iconTable" onclick="model.removeOrder('${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
-    return html
+    return html;
 };
 
 view.htmlInputOrder = (data) => {
@@ -647,11 +647,14 @@ view.updateCustomer = (data) => {
         password: updateForm.password.value
     };
     
-   if(view.checkInvalidDate(updateForm.dob.value)) {
-       console.log(dataToUpdate);
-    }
+//    if(view.checkInvalidDate(updateForm.dob.value)) {
+//        console.log(dataToUpdate);
+//     }
 
-    model.update(data.id, dataToUpdate, 'users')
+    if(controller.validateForm(dataToUpdate)){
+        model.update(data.id, dataToUpdate, 'users');
+    }
+    
 
     
 }
