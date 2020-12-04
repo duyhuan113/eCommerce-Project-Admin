@@ -807,7 +807,7 @@ body {
 
 .right__cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-gap: 20px;
   margin-bottom: 20px;
 }
@@ -1494,4 +1494,32 @@ input:checked + .slider:before {
   100% {
       transform: rotate(360deg);
   }
+}
+
+
+
+/* error */
+
+.error{
+  color: red;
+}
+
+
+.rangeMonths{
+  border: 1px solid black;
+  float: right;
+  width: 400px;
+  height: 200px;
+  max-width: 400px;
+  max-height: 400px;
+}
+
+.topPerformProduct{
+  display: block;
+  border: 1px solid black;
+  float: right;
+  width: 600px;
+  height: 400px;
+  max-width: 400px;
+  max-height: 400px;
 }

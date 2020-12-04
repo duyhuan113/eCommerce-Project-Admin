@@ -24,7 +24,7 @@ controller.validateForm = (data) => {
             view.setErrorMessage(`${property}-error`, 'Field is Required ');
             console.log(`${property}-error`);
             isNotEmpty = false;
-            return isNotEmpty;
+            return isNotEmpty;  
         }else{
             view.setErrorMessage(`${property}-error`, '');
         }

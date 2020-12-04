@@ -49,6 +49,7 @@ model.getOrdersData = async () => {
     } else if (model.currentLocationScreen == 'orderPage') {
         view.showOrderList(model.ordersData);
     }
+    return model.ordersData
 };
 
 //function này lấy order by id 
@@ -56,6 +57,8 @@ model.getOrdersDatabyId = async (id) => {
     const response = await firebase.firestore().collection("orders").where("email", "==", id).get()
     return getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));
 };
+
+
 
 
 model.uploadImgToFirestorage = async (files) => {
@@ -78,31 +81,36 @@ model.uploadImgToFirestorage = async (files) => {
 
 model.addProduct = (data) => {
     const dataToCreate = {
-        ...data,
-        createAt: new Date().toISOString()
+        ...data
     }
     firebase.firestore().collection('products').doc().set(dataToCreate);
     return alert('Successful')
 };
 
+model.addCustomer = (data) => {
+    firebase.firestore().collection('users').doc(data.email).set(data);
+    return alert('Successful')
+};
+
 model.update = async (id, data, collection) => {
+    console.log(data);
     await firebase.firestore().collection(collection).doc(id).update(data);
     model.getOrdersData();
     model.getProductsData();
     model.getUsersData();
-    
-
-
+    alert('ok');
 }
 model.removeItem = (collection, id) => {
-    console.log(id);
-    firebase.firestore().collection(collection).doc(id).delete().then(function () {
-        console.log("Document successfully deleted!");
-        model.getProductsData();
-        model.getUsersData()
-    }).catch(function (error) {
-        console.error("Error removing document: ", error);
-    });
+    if (confirm('Delete This Item?')) {
+        console.log(id);
+        firebase.firestore().collection(collection).doc(id).delete().then(function () {
+            console.log("Document successfully deleted!");
+            model.getProductsData();
+            model.getUsersData()
+        }).catch(function (error) {
+            console.error("Error removing document: ", error);
+        });
+    };
 };
 
 
@@ -120,6 +128,9 @@ model.updateStatusOrder = async (id, status) => {
     await firebase.firestore().collection('orders').doc(id).update({ status: status });
     model.getOrdersData();
 };
+
+
+
 
 
 //đoạn này lấy Data từ doc

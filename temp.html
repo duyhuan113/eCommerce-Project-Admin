@@ -9,28 +9,92 @@
 </head>
 
 <body>
-    <div class="donhang">
-        <table width="100%">
-            <thead>
-                <tr>
-                    <th width="200px">No.</th>
-                    <th width="200px">Order ID</th>
-                    <th>Created At</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody id ="tbody_itemOrder">
-                
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td rowspan="4" colspan="4">Grand Total</td>
-                    <td>${data.total} $</td>
-                </tr>
-            </tfoot>
-        </table>
+    <div class="wrapper">
+        <div id="dashBoard" class="dashboard">
+            <div class="right">
+                <div class="right__content">
+                    <div class="right__title">Dashboard</div>
+                    <p class="right__desc">dashboard</p>
+                    <div class="right__cards">
+                        <a class="right__card">
+                            <div class="right__cardTitle">Total Orders</div>
+                            <div id="orderNumber" class="right__cardNumber">$ 0</div>
+                        </a>
+                        <a class="right__card">
+                            <div class="right__cardTitle">Revenue Total</div>
+                            <div id="totalRevenueNumber" class="right__cardNumber">$ 0</div>
+                        </a>
+                        <a class="right__card">
+                            <div class="right__cardTitle">Shipping Cost</div>
+                            <div id="shipCostNumber" class="right__cardNumber">$ 0</div>
+                        </a>
+                        <a class="right__card">
+                            <div class="right__cardTitle">Total Profit</div>
+                            <div id="totalProfitNumber" class="right__cardNumber">$ 0</div>
+                        </a>
+                        <a class="right__card">
+                            <div class="right__cardTitle">Average Order Size</div>
+                            <div id="averageNumber" class="right__cardNumber">$ 0</div>
+                        </a>
+                    </div>
+                    <div class="right__table">
+                        <div id="lineChart">
+
+                        </div>
+                    </div>
+
+                    <div id="topPerformProduct" class="topPerformProduct">
+                        <h1>TOP PERFORM PRODUCT</h1>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px;">Product Name</th>
+                                    <th style="width: 100px;">Profit</th>
+                                    <th style="width: 100px;">Margin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topPerformProduct_tbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="rangeMonths" class="rangeMonths">
+                        <h1>DATE RANGE</h1>
+                        <form id="inputRangeMonths" action="">
+                            <h3 for="strDate"> START DATE</h3>
+                            <input id="strDate" type="date" value="2020-11-01">
+                            <h3 for="endDate"> END DATE</h3>
+                            <input id="endDate" type="date" value="2020-11-30">
+                        </form>
+                    </div>
+                    <button id="viewBtn" onclick="">View</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
+<script>
+    // const startDate = document.getElementById('strDate').value;
+    // const endDate = document.getElementById('endDate').value;
+    // console.log(strDate);
+
+    // console.log(endDate);
+
+    // var listDate = [];
+    
+    // var dateMove = new Date(startDate);
+    // var strDate = startDate;
+
+    // while (strDate <= endDate) {
+    //     var strDate = dateMove.toISOString().slice(0, 10);
+    //     listDate.push(strDate);
+    //     dateMove.setDate(dateMove.getDate() + 1);
+    // };
+    // console.log(listDate);
+
+
+
+</script>
 
 </html>
