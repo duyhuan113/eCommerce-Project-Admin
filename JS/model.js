@@ -17,7 +17,6 @@ model.login = (data) => {
     }
 };
 
-
 model.getProductsData = async () => {
     //đoạn này bóc tách dữ liệu từ db trả về
     const response = await firebase.firestore().collection("products").get()
@@ -25,6 +24,7 @@ model.getProductsData = async () => {
     model.getUsersData();
     return model.productsData;
 };
+
 model.getUsersData = async () => {
     //đoạn này bóc tách dữ liệu từ db trả về
     const response = await firebase.firestore().collection("users").get()
@@ -34,10 +34,9 @@ model.getUsersData = async () => {
     if (model.currentLocationScreen == 'customerPage') {
         view.showCustomerList(model.usersData);
     }
-
     model.getOrdersData();
-
 };
+
 model.getOrdersData = async () => {
     //đoạn này bóc tách dữ liệu từ db trả về
     const response = await firebase.firestore().collection("orders").get()
@@ -47,7 +46,6 @@ model.getOrdersData = async () => {
     } else if (model.currentLocationScreen == 'orderPage') {
         view.showOrderList(model.ordersData);
     }
-    return model.ordersData
 };
 
 //function này lấy order by id 
@@ -82,10 +80,12 @@ model.uploadImgToFirestorage = async (files) => {
 
 model.addItem = (collection, data) => {
     firebase.firestore().collection(collection).doc().set(data);
+    
 };
 
 model.addCustomer = (data) => {
     firebase.firestore().collection('users').doc(data.email).set(data);
+    console.log('OK');
 };
 
 model.update = async (id, data, collection) => {

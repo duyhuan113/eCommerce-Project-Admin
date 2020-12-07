@@ -37,45 +37,44 @@ component.sideBar = `
                 <p class="left__name">Supper Saya</p>
             </div>
             <ul class="left__menu">
-                <li class="left__menuItem">
-                    <a href="index.html" class="left__title" onclick="view.setScreenBtn('homePage')"><img src="assets/icon-dashboard.svg" alt="">Dashboard</a>
+                
+                <li class=" dropdown">
+                    <div class="dropbtn" onclick="view.setScreenBtn('homePage')"></i>DashBoard</div>
+                    
                 </li>
                 <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('productPage')"><img src="assets/icon-tag.svg" alt="" >Product<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                    <div class="dropbtn" onclick="view.setScreenBtn('productPage')">Product<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
                     <div class=" dropdown-content">
                         <a onclick="view.setScreenBtn('addProduct')" href="">Add Product</a>
-                        
                     </div>
                 </li>
                 <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('categoryPage')"><img src="assets/icon-tag.svg" alt="" >Category<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                    <div class="dropbtn" onclick="view.setScreenBtn('categoryPage')">Category<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
                     <div class=" dropdown-content">
                         <a onclick="view.setScreenBtn('addCategory')" href="">Add Category</a>
                     </div>
                 </li>
                 
                 <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('customerPage')"><img src="assets/icon-tag.svg" alt="" >Customer<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                    <div class="dropbtn" onclick="view.setScreenBtn('customerPage')">Customer<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
                     <div class=" dropdown-content">
                         <a onclick="view.setScreenBtn('addCustomer')" href="">Add Customer</a>
                     </div>
                 </li>
                 <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('orderPage')"><img src="assets/icon-tag.svg" alt="" >Order<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                    <div class="dropbtn" onclick="view.setScreenBtn('orderPage')">Order<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
                     <div class=" dropdown-content">
                         <a onclick="view.setScreenBtn('reportPage')" href="">View Report</a>
                     </div>
                 </li>
-                
-                <li class="left__menuItem">
-                    <div class="left__title"><img src="assets/icon-user.svg" alt="">Admin<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-                    <div class="left__text">
-                        <a class="left__link" href="insert_admin.html">Add admin</a>
-                        <a class="left__link" href="view_admins.html">View admins</a>
+                <li class=" dropdown">
+                    <div class="dropbtn" onclick="view.setScreenBtn('viewAdminPage')">Admin<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                    <div class=" dropdown-content">
+                        <a onclick="view.setScreenBtn('addAdmin')" href="">Add Admin Account</a>
                     </div>
                 </li>
-                <li class="left__menuItem" onclick="view.signOutButton()">
-                    <a href="" class="left__title" ><img src="assets/icon-logout.svg" alt="">Sign out</a>
+                <li class=" dropdown">
+                    <div class="dropbtn" onclick="view.signOutButton()">LogOut</div>
                 </li>
             </ul>
         </div>
@@ -93,7 +92,7 @@ component.homePage = `
             <div class="right">
                 <div class="right__content">
                     <div class="right__title">Dashboard</div>
-                    <p class="right__desc">dashboard</p>
+                    
                     <div class="right__cards">
                         <a class="right__card" onclick="view.setScreenBtn('productPage')"     href="" >
                             <div class="right__cardTitle">Products</div>
@@ -165,8 +164,7 @@ component.productPage = `
         <div id="dashBoard" class="dashboard">
             <div class="right">
                 <div class="right__content">
-                    <div class="right__title">Dashboard</div>
-                    <p class="right__desc">View product</p>
+                    <div class="right__title">View product</div>
                     <div class="right__table">
                         <div class="topnav">
                             <form>
@@ -224,8 +222,7 @@ component.addProduct = `
             <div id="dashBoard" class="dashboard">
                 <div class="right">
                     <div class="right__content">
-                        <div class="right__title">Dashboard</div>
-                        <p class="right__desc">Insert product</p>
+                        <div class="right__title">Add Product</div>
                         <div class="right__formWrapper">
                             <form id="addProductForm"  action="" method="POST" >
                                 <div class="right__inputWrapper">
@@ -331,8 +328,7 @@ component.addCustomer = `
         <div id="dashBoard" class="dashboard">
             <div class="right">
                 <div class="right__content">
-                    <div class="right__title">Dashboard</div>
-                    <p class="right__desc">Add Customer</p>
+                    <div class="right__title">Add Customer</div>
                     <div class="right__formWrapper">
                     <form id="addCustomerForm">
                         <div class="right__inputWrapper">
@@ -384,8 +380,7 @@ component.orderPage = `
         <div id="dashBoard" class="dashboard">
             <div class="right">
                 <div class="right__content">
-                    <div class="right__title">Dashboard</div>
-                    <p class="right__desc">View Order</p>
+                    <div class="right__title">View Order</div>
                     <div class="right__table">
                         <div class="topnav">
                             <form>
@@ -454,8 +449,7 @@ component.customerPage = `
         <div id="dashBoard" class="dashboard">
             <div class="right">
                 <div class="right__content">
-                    <div class="right__title">Dashboard</div>
-                    <p class="right__desc">View Customer</p>
+                    <div class="right__title">View Customer</div>
                     <div class="right__table">
                         <div class="topnav">
                             <form>
@@ -522,8 +516,7 @@ component.categoryPage = `
     <div id="dashBoard" class="dashboard">
         <div class="right">
             <div class="right__content">
-                <div class="right__title">Dashboard</div>
-                <p class="right__desc">View Category</p>
+                <div class="right__title">View Category</div>
                 <div class="right__table">
                     <div class="topnav">
                         <form>
@@ -577,8 +570,7 @@ component.addCategory = `
     <div id="dashBoard" class="dashboard">
         <div class="right">
             <div class="right__content">
-                <div class="right__title">Dashboard</div>
-                <p class="right__desc">Add Category</p>
+                <div class="right__title">Add Category</div>
                 <div class="right__formWrapper">
                     <form id="addCategoryForm"  >
                         <div class="right__inputWrapper">
@@ -591,7 +583,6 @@ component.addCategory = `
                             <input type="text" name="des" placeholder="Description" required>
                             <div class="error" id="des-error"></div>
                         </div>
-                        
                         <div class="right__inputWrapper">
                             <label for="image">Select Image </label>
                             <input id="photo" type="file" name="img" >
@@ -612,7 +603,6 @@ component.reportPage = `
             <div class="right">
                 <div class="right__content">
                     <div class="right__title">Sales Summary</div>
-                    <p class="right__desc">Financial Report</p>
                     <div class="right__cards">
                         <a class="right__card">
                             <div class="right__cardTitle">Total Orders</div>
@@ -665,3 +655,89 @@ component.reportPage = `
             </div>
         </div>
     </div>`;
+
+component.viewAdminPage = `
+<div class="wrapper">
+    <div id="dashBoard" class="dashboard">
+        <div class="right">
+            <div class="right__content">
+                <div class="right__title">View Category</div>
+                <div class="right__table">
+                    <div class="topnav">
+                        <form>
+                            <input id="inputSearch" type="text" placeholder="Search...">
+                            <button id="btnSearch" >Search</button>
+                        </form>
+                    </div>
+                    <div class="right__tableWrapper">
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Category ID</th>
+                                    <th>Brand Name</th>
+                                    <th>DesCription</th>
+                                    <th>Image</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="category_tbody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- div Update, div này bị ẩn -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="right__title">Edit Product Information</div>
+                <span id="closeBtn" class="close">&times;</span>
+                <div class="right">
+                    <div class="right__content">
+                        <div id="mainInformation" class="information">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+
+component.addAdmin = `
+<div class="wrapper">
+    <div id="dashBoard" class="dashboard">
+        <div class="right">
+            <div class="right__content">
+                <div class="right__title">Add Admin</div>
+                <div class="right__formWrapper">
+                    <form id="addCategoryForm"  >
+                        <div class="right__inputWrapper">
+                            <label for="p_category">Brand Name</label>
+                            <input type="text" name="brand" placeholder="Brand Name" required>
+                            <div class="error" id="brand-error"></div>
+                        </div>
+                        <div class="right__inputWrapper">
+                            <label for="title">Description</label>
+                            <input type="text" name="des" placeholder="Description" required>
+                            <div class="error" id="des-error"></div>
+                        </div>
+                        <div class="right__inputWrapper">
+                            <label for="image">Select Image </label>
+                            <input id="photo" type="file" name="img" >
+                            <div class="error" id="img-error"></div>
+                        </div>
+                    </form>
+                    <button id="addBtn" class="btn" >Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`;

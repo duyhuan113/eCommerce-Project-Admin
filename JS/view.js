@@ -40,6 +40,13 @@ view.setActiveScreen = (screenName) => {
             model.getOrdersData();
             view.searchByName();
             break;
+
+        case 'reportPage':
+            document.getElementById('app').innerHTML += component.reportPage;
+            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            view.loadChart();
+            break;
+
         case 'customerPage':
             document.getElementById('app').innerHTML += component.customerPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
@@ -55,12 +62,6 @@ view.setActiveScreen = (screenName) => {
             });
             break;
 
-        case 'reportPage':
-            document.getElementById('app').innerHTML += component.reportPage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
-            view.loadChart();
-            break;
-
         case 'categoryPage':
             document.getElementById('app').innerHTML += component.categoryPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
@@ -74,6 +75,21 @@ view.setActiveScreen = (screenName) => {
                 view.addCategory();
             });
             break;
+
+        case 'viewAdminPage':
+            document.getElementById('app').innerHTML += component.categoryPage;
+            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            view.showCategoryList();
+            break;
+
+        case 'addAdmin':
+            document.getElementById('app').innerHTML += component.addCategory;
+            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            document.getElementById('addBtn').addEventListener('click', () => {
+                view.addCategory();
+            });
+            break;
+
     }
 };
 
@@ -936,9 +952,9 @@ view.filterOrder = (keyValue) => {
 view.showCategoryList = async () => {
     const category_tbody = document.getElementById('category_tbody');
     const data = await model.getCollectionData('categories');
-    console.log(data);
+    // console.log(data.length);
     category_tbody.innerHTML = '';
-    for (let i = 0; i <= data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         category_tbody.innerHTML += view.htmlCategoryList(data[i], i)
     }
 };
@@ -955,18 +971,23 @@ view.htmlCategoryList = (data, i) => {
         <td data-label="Delete" class="right__iconTable" onclick="view.removeCategory('categories', '${data.id}','${data.brand}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html;
-}
+};
 
 view.removeCategory = async (collection, id, brand) => {
+    //console.log(collection,id,brand);
+    let flag = true;
     let dataProducts = await model.getProductsData();
     for (let data of dataProducts) {
         if (data.category.toLowerCase() == brand.toLowerCase()) {
-            alert("Cant't Delete This Item");
-        } else {
-            model.removeItem(collection, id);
-        }
+            flag = false
+        }   
     }
-}
+    if(flag){
+        model.removeItem(collection, id);
+    }else{
+        alert("Can't Delete This Item!")
+    }
+};
 
 view.addCategory = async () => {
     let files = document.querySelector("#photo").files;
@@ -975,15 +996,13 @@ view.addCategory = async () => {
         brand: addCategoryForm.brand.value,
         des: addCategoryForm.des.value
     };
-
     if (controller.validateForm(dataToAdd)) {
-
         if (await view.checkDuplicateBrand(dataToAdd.brand)) {
             if (files.length != 0) {
                 if (confirm('Do You Want Add This Item To Collection?')) {
                     view.loadingScreen('block')
-                    let img = await model.uploadImgToFirestorage(files);
-                    dataToAdd.img = img;
+                    let logo = await model.uploadImgToFirestorage(files);
+                    dataToAdd.logo = logo;
                     model.addItem('categories', dataToAdd);
                     view.loadingScreen('none');
                     window.location.reload();
@@ -993,15 +1012,15 @@ view.addCategory = async () => {
                 view.setErrorMessage('img-error', 'Please Choose 1 Image');
             }
         }
-
     }
 };
 
+// function này check xem tên brand đã tồn tại chưa
 view.checkDuplicateBrand = async (inputBrand) => {
     const dataCategory = await model.getCollectionData('categories');
     let flag = true
-    for(let data of dataCategory){
-        if(data.brand.toLowerCase() === inputBrand.toLowerCase()){
+    for (let data of dataCategory) {
+        if (data.brand.toLowerCase() === inputBrand.toLowerCase()) {
             alert('This Brand has already!');
             flag = false;
         }
@@ -1030,6 +1049,11 @@ view.showReportPage = async (startDate, endDate) => {
     let dataRangeByDate = [];
     const topPerformProduct_tbody = document.getElementById('topPerformProduct_tbody')
     const chart = document.getElementById('chart');
+    document.getElementById('orderNumber').innerText = dataRangeByDate.length;
+    document.getElementById('totalRevenueNumber').innerText = `$ ${totalRevenue}`;
+    document.getElementById('shipCostNumber').innerText = `$ ${dataRangeByDate.length * 3}`;
+    document.getElementById('totalProfitNumber').innerText = `$ ${totalRevenue - dataRangeByDate.length * 3}`;
+    document.getElementById('averageNumber').innerText = `$ ${Math.floor(totalRevenue / dataRangeByDate.length)}`;
 
     // lấy ra các order trong khảong tgian
     for (let i = 0; i < dataOrders.length; i++) {
@@ -1038,14 +1062,8 @@ view.showReportPage = async (startDate, endDate) => {
             dataRangeByDate.push(dataOrders[i])
         }
     }
+    
     let totalRevenue = view.totalRevenueOrder(dataRangeByDate);
-
-    document.getElementById('orderNumber').innerText = dataRangeByDate.length;
-    document.getElementById('totalRevenueNumber').innerText = `$ ${totalRevenue}`;
-    document.getElementById('shipCostNumber').innerText = `$ ${dataRangeByDate.length * 3}`;
-    document.getElementById('totalProfitNumber').innerText = `$ ${totalRevenue - dataRangeByDate.length * 3}`;
-    document.getElementById('averageNumber').innerText = `$ ${Math.floor(totalRevenue / dataRangeByDate.length)}`;
-
     let dataTopPerformProduct = view.getDataTopPerformProduct(dataRangeByDate);
 
     //console.log(dataTopPerformProduct);
