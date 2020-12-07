@@ -23,7 +23,7 @@ view.setActiveScreen = (screenName) => {
         case 'productPage':
             document.getElementById('app').innerHTML += component.productPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
-            model.getProductsData();
+            view.showProductList();
             view.searchByName();
 
             break;
@@ -50,7 +50,6 @@ view.setActiveScreen = (screenName) => {
         case 'addCustomer':
             document.getElementById('app').innerHTML += component.addCustomer;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
-
             document.getElementById('addBtn').addEventListener('click', () => {
                 view.addCustomer();
             });
@@ -59,13 +58,24 @@ view.setActiveScreen = (screenName) => {
         case 'reportPage':
             document.getElementById('app').innerHTML += component.reportPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
-            let startDate = document.getElementById('strDate').value;
-            let endDate = document.getElementById('endDate').value;
-            view.getDateRange(startDate, endDate);
+            view.loadChart();
+            break;
+
+        case 'categoryPage':
+            document.getElementById('app').innerHTML += component.categoryPage;
+            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            view.showCategoryList();
+            break;
+
+        case 'addCategory':
+            document.getElementById('app').innerHTML += component.addCategory;
+            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            document.getElementById('addBtn').addEventListener('click', () => {
+                view.addCategory();
+            });
             break;
     }
 };
-
 
 // function này 
 view.showDashBoard = (data) => {
@@ -85,9 +95,10 @@ view.showDashBoard = (data) => {
     }
 };
 
-//function của Product
+//function của Product==========================================================================================================================
 
-view.showProductList = (data) => {
+view.showProductList = async () => {
+    const data = await model.getProductsData();
     const itemTbody = document.getElementById('item_tbody');
     const status = document.getElementsByClassName('switch');
     itemTbody.innerHTML = ''
@@ -174,7 +185,7 @@ view.addProduct = async () => {
             let img = await model.uploadImgToFirestorage(files);
             view.loadingScreen('none')
             data.img = [...img];
-            model.addProduct(data);
+            model.addItem('products', data);
         }
     } else {
         view.setErrorMessage('img-error', 'Choose at least 4 Images')
@@ -881,10 +892,9 @@ view.updateCustomer = (data) => {
         }
     }
 };
-
 // ==========================================================================================================================
 
-//đoạn này search==============================================================================================================
+//SEARCH=====================================================================================================================
 view.searchByName = () => {
     const inputSearch = document.getElementById('inputSearch');
     inputSearch.addEventListener('input', () => {
@@ -919,19 +929,100 @@ view.filterOrder = (keyValue) => {
     filterData.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
     view.showOrderList(filterData);
 };
-
 // ================================================================================================================================
 
-// REPORT PAGE==================================================================================================================
+//CATEGORY=========================================================================================================================
+
+view.showCategoryList = async () => {
+    const category_tbody = document.getElementById('category_tbody');
+    const data = await model.getCollectionData('categories');
+    console.log(data);
+    category_tbody.innerHTML = '';
+    for (let i = 0; i <= data.length; i++) {
+        category_tbody.innerHTML += view.htmlCategoryList(data[i], i)
+    }
+};
+
+view.htmlCategoryList = (data, i) => {
+    html = `
+    <tr>
+        <td>${i + 1}</td>
+        <td data-label="">${data.id}</td>
+        <td data-label="">${data.brand}</td>
+        <td data-label="">${data.des}</td>
+        <td data-label=""><img src="${data.logo}" alt=""></td>
+        <td data-label="Edit" class="right__iconTable" onclick="view.showCustomer(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
+        <td data-label="Delete" class="right__iconTable" onclick="view.removeCategory('categories', '${data.id}','${data.brand}')"><img src="assets/icon-trash-black.svg" alt=""></td>
+    </tr>`;
+    return html;
+}
+
+view.removeCategory = async (collection, id, brand) => {
+    let dataProducts = await model.getProductsData();
+    for (let data of dataProducts) {
+        if (data.category.toLowerCase() == brand.toLowerCase()) {
+            alert("Cant't Delete This Item");
+        } else {
+            model.removeItem(collection, id);
+        }
+    }
+}
+
+view.addCategory = async () => {
+    let files = document.querySelector("#photo").files;
+    const addCategoryForm = document.getElementById('addCategoryForm');
+    let dataToAdd = {
+        brand: addCategoryForm.brand.value,
+        des: addCategoryForm.des.value
+    };
+
+    if (controller.validateForm(dataToAdd)) {
+
+        if (await view.checkDuplicateBrand(dataToAdd.brand)) {
+            if (files.length != 0) {
+                if (confirm('Do You Want Add This Item To Collection?')) {
+                    view.loadingScreen('block')
+                    let img = await model.uploadImgToFirestorage(files);
+                    dataToAdd.img = img;
+                    model.addItem('categories', dataToAdd);
+                    view.loadingScreen('none');
+                    window.location.reload();
+                    alert('Add Successful')
+                }
+            } else {
+                view.setErrorMessage('img-error', 'Please Choose 1 Image');
+            }
+        }
+
+    }
+};
+
+view.checkDuplicateBrand = async (inputBrand) => {
+    const dataCategory = await model.getCollectionData('categories');
+    let flag = true
+    for(let data of dataCategory){
+        if(data.brand.toLowerCase() === inputBrand.toLowerCase()){
+            alert('This Brand has already!');
+            flag = false;
+        }
+    }
+    return flag;
+};
+
+
+//=================================================================================================================================
+
+
+
+
+// REPORT PAGE=====================================================================================================================
+
 //function này chờ sự kiện click ở màn hình ( vào component tìm)
 view.getDateRange = () => {
-    const viewDateRangeBtn = document.getElementById('viewDateRangeBtn');
     let startDate = document.getElementById('strDate').value;
     let endDate = document.getElementById('endDate').value;
     view.showReportPage(startDate, endDate);
 };
-
-
 
 // function show ra trang report
 view.showReportPage = async (startDate, endDate) => {
@@ -962,18 +1053,15 @@ view.showReportPage = async (startDate, endDate) => {
     for (let data of dataTopPerformProduct) {
         topPerformProduct_tbody.innerHTML += view.htmlItemTopPerformProduct(data, totalRevenue);
     }
-
     view.loadChart(startDate, endDate);
 };
 
-
+//func này load ra cái biểu đồ
 view.loadChart = async (startDate, endDate) => {
     let rangeDateValue = view.rangeDate(startDate, endDate)
     //console.log(rangeDateValue);
     let dataOrders = await model.getOrdersData();
     dataOrders.sort((a, b) => (a.createAt > b.createAt) ? 1 : ((b.createAt > a.createAt) ? -1 : 0));
-    
-
 
     let rangeRevenue = [];
     let i = -1;
@@ -981,7 +1069,7 @@ view.loadChart = async (startDate, endDate) => {
         i++
         for (let createDate of dataOrders) {
             if (date == formatDate(createDate.createAt)) {
-                total =  await view.getOrderTotalbyDay(formatDate(createDate.createAt))
+                total = await view.getOrderTotalbyDay(formatDate(createDate.createAt))
                 rangeRevenue[i] = total;
             }
         }
@@ -994,7 +1082,7 @@ view.loadChart = async (startDate, endDate) => {
             labels: [...rangeDateValue],
             datasets: [{
                 label: 'The Line Chart Represents the Revenue',
-                data:[...rangeRevenue],
+                data: [...rangeRevenue],
                 borderWidth: 1
             }]
         },
@@ -1010,26 +1098,6 @@ view.loadChart = async (startDate, endDate) => {
     });
 };
 
-view.getOrderTotalbyDay = async (date)=>{
-    let dataOrders = await model.getOrdersData();
-    let orderInDay = [];
-    let total = 0;
-
-    for(let data of dataOrders ){
-        if(formatDate(data.createAt) == date){
-            orderInDay.push(data)
-        }
-    }
-    for(let order of orderInDay){
-        
-        total += Number(order.total) 
-
-    }   
-    //console.log(date, total);
-    return total
-}
-
-
 // đoạn này tạo bước nhảy giữa các ngày
 view.rangeDate = (startDate, endDate) => {
     // console.log(startDate);
@@ -1044,7 +1112,23 @@ view.rangeDate = (startDate, endDate) => {
         dateMove.setDate(dateMove.getDate() + jump);
     };
     return listDate;
-}
+};
+//function này tính tổng giá trị order trong 1 ngày
+view.getOrderTotalbyDay = async (date) => {
+    let dataOrders = await model.getOrdersData();
+    let orderInDay = [];
+    let total = 0;
+
+    for (let data of dataOrders) {
+        if (formatDate(data.createAt) == date) {
+            orderInDay.push(data)
+        }
+    }
+    for (let order of orderInDay) {
+        total += Number(order.total)
+    }
+    return total;
+};
 
 // html của bảng top sản phẩm
 view.htmlItemTopPerformProduct = (data, totalRevenue) => {
@@ -1090,18 +1174,16 @@ view.getDataTopPerformProduct = (dataRangeByDate) => {
     return unique.sort((a, b) => (a.name > b.name ? 1 : ((b.name < a.name) ? -1 : 0)))
 };
 
-//function tính tổng doanh thu
+//function tính tổng doanh thu từ các order
 view.totalRevenueOrder = (data) => {
     let total = 0;
     for (let i = 0; i < data.length; i++) {
         total += parseInt(data[i].total);
     }
-    return total
+    return total;
 };
 
-
 // ================================================================================================================================
-
 
 // function này set Màn hình hiện tại
 view.setScreenBtn = (value) => {

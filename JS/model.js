@@ -23,9 +23,7 @@ model.getProductsData = async () => {
     const response = await firebase.firestore().collection("products").get()
     model.productsData = getDataFromDocs(response.docs).sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name > a.name) ? -1 : 0));
     model.getUsersData();
-    if (model.currentLocationScreen == 'productPage') {
-        view.showProductList(model.productsData);
-    }
+    return model.productsData;
 };
 model.getUsersData = async () => {
     //đoạn này bóc tách dữ liệu từ db trả về
@@ -58,7 +56,10 @@ model.getOrdersDatabyId = async (id) => {
     return getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));
 };
 
-
+model.getCollectionData = async (collection)=>{
+    const response = await firebase.firestore().collection(collection).get()
+    return getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));
+}
 
 
 model.uploadImgToFirestorage = async (files) => {
@@ -79,17 +80,12 @@ model.uploadImgToFirestorage = async (files) => {
     return imagePaths;
 };
 
-model.addProduct = (data) => {
-    const dataToCreate = {
-        ...data
-    }
-    firebase.firestore().collection('products').doc().set(dataToCreate);
-    return alert('Successful')
+model.addItem = (collection, data) => {
+    firebase.firestore().collection(collection).doc().set(data);
 };
 
 model.addCustomer = (data) => {
     firebase.firestore().collection('users').doc(data.email).set(data);
-    return alert('Successful')
 };
 
 model.update = async (id, data, collection) => {
