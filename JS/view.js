@@ -3,8 +3,8 @@ const view = {};
 view.setActiveScreen = (screenName) => {
     switch (screenName) {
         case 'loginPage':
-            document.getElementById('app').innerHTML = component.loginPage;
 
+            document.getElementById('app').innerHTML += component.loginPage;
             const loginForm = document.getElementById('login-form');
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -19,6 +19,7 @@ view.setActiveScreen = (screenName) => {
             document.getElementById('app').innerHTML += component.homePage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             model.getProductsData();
+
             break;
         case 'productPage':
             document.getElementById('app').innerHTML += component.productPage;
@@ -30,6 +31,7 @@ view.setActiveScreen = (screenName) => {
         case 'addProduct':
             document.getElementById('app').innerHTML += component.addProduct;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
+            view.loadOptionCategory();
             document.getElementById('addBtn').addEventListener('click', () => {
                 view.addProduct();
             });
@@ -44,7 +46,7 @@ view.setActiveScreen = (screenName) => {
         case 'reportPage':
             document.getElementById('app').innerHTML += component.reportPage;
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
-            view.loadChart();
+            view.getDateRange();
             break;
 
         case 'customerPage':
@@ -52,14 +54,6 @@ view.setActiveScreen = (screenName) => {
             document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             model.getUsersData();
             view.searchByName();
-            break;
-
-        case 'addCustomer':
-            document.getElementById('app').innerHTML += component.addCustomer;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
-            document.getElementById('addBtn').addEventListener('click', () => {
-                view.addCustomer();
-            });
             break;
 
         case 'categoryPage':
@@ -75,21 +69,6 @@ view.setActiveScreen = (screenName) => {
                 view.addCategory();
             });
             break;
-
-        case 'viewAdminPage':
-            document.getElementById('app').innerHTML += component.categoryPage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
-            view.showCategoryList();
-            break;
-
-        case 'addAdmin':
-            document.getElementById('app').innerHTML += component.addCategory;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
-            document.getElementById('addBtn').addEventListener('click', () => {
-                view.addCategory();
-            });
-            break;
-
     }
 };
 
@@ -110,6 +89,13 @@ view.showDashBoard = (data) => {
         view.setStatusOrder(ordersData[i], i)
     }
 };
+
+
+
+
+
+// ==================================================================================================================================================
+
 
 //function của Product==========================================================================================================================
 
@@ -168,12 +154,23 @@ view.removeProduct = async (id) => {
     }
 };
 
+
+//function này load ra list các category hiện có.
+view.loadOptionCategory = async () => {
+    const optionCategory = document.getElementById('optionCategory');
+    const data = await model.getCollectionData('categories');
+    console.log(data);
+    for (let item of data) {
+        optionCategory.innerHTML += `<option value="${item.brand}">${item.brand}</option>`;
+    }
+}
+
 view.addProduct = async () => {
     let files = document.querySelector("#photo").files;
     const addProductForm = document.getElementById('addProductForm');
+    let option = document.getElementsByTagName("option");
     const data = {
         name: addProductForm.name.value,
-        category: addProductForm.category.value,
         price: addProductForm.price.value,
         color: addProductForm.color.value,
         availableQuantity: addProductForm.quantity.value,
@@ -194,19 +191,32 @@ view.addProduct = async () => {
         status: true,
         createAt: new Date().toISOString()
     };
-    if (files.length >= 3) {
-        if (controller.validateForm(data)) {
 
-            view.loadingScreen('block')
-            let img = await model.uploadImgToFirestorage(files);
-            view.loadingScreen('none')
-            data.img = [...img];
-            model.addItem('products', data);
-        }
-    } else {
-        view.setErrorMessage('img-error', 'Choose at least 4 Images')
+    for (let i = 0; i < option.length; i++) {
+        if (option[i].selected == true) {
+            if (option[i].value != '') {
+                data.category = option[i].value;
+                view.setErrorMessage('category-error', '')
+            } else {
+                view.setErrorMessage('category-error', 'Please choose the Category of Item!')
+            }
+        };
     }
+
+    // if (files.length >= 3) {
+    //     if (controller.validateForm(data)) {
+    view.loadingScreen('block')
+    let img = await model.uploadImgToFirestorage(files);
+    view.loadingScreen('none')
+    data.img = [...img];
+    model.addItem('products', data);
+    // }
+    // } else {
+    //     view.setErrorMessage('img-error', 'Choose at least 4 Images')
+    // }
 };
+
+
 
 // function nay show ra popup cua Detail san pham
 view.showProduct = (index, option) => {
@@ -232,7 +242,9 @@ view.showProduct = (index, option) => {
     if (option == 'view') {
         mainInformation.innerHTML = view.htmlDetailProduct(productsData[index]);
     } else if (option == 'update') {
-        mainInformation.innerHTML = view.htmlInputProduct(productsData[index]);
+        mainInformation.innerHTML = view.htmlUpdateProductForm(productsData[index]);
+        view.loadOptionCategory();
+
         view.listenEventUpdate(index, 'product');
     }
 };
@@ -240,9 +252,10 @@ view.showProduct = (index, option) => {
 view.updateProduct = async (data) => {
     let files = document.querySelector("#photo").files;
     const updateForm = document.getElementById('updateForm');
+    let option = document.getElementsByTagName("option");
+
     const dataToUpdate = {
         name: updateForm.name.value,
-        category: updateForm.category.value,
         price: updateForm.price.value,
         color: updateForm.color.value,
         availableQuantity: updateForm.quantity.value,
@@ -250,7 +263,7 @@ view.updateProduct = async (data) => {
             rearCam: updateForm.rearCam.value,
             fontCam: updateForm.fontCam.value,
             ram: updateForm.ram.value,
-            capacity: updateForm.category.value,
+            capacity: updateForm.capacity.value,
             os: updateForm.os.value,
             chip: updateForm.chip.value,
             display: updateForm.display.value,
@@ -259,21 +272,36 @@ view.updateProduct = async (data) => {
             releaseDate: updateForm.releaseDate.value,
         },
         video: updateForm.video.value,
-        des: updateForm.des.value,
+        des: updateForm.des.value
     };
-
-    if (controller.validateForm(dataToUpdate)) {
-        if (files.length <= 3) {
-            view.setErrorMessage('img-error', 'Choose at least 4 Images')
-        } else if (files.length == 0) {
-            dataToUpdate.img = [...data.img];
-        } else {
-            document.getElementById('loading').style.display = 'block';
-            let img = await model.uploadImgToFirestorage(files);
-            dataToUpdate.img = [...img];
-            document.getElementById('loading').style.display = 'none'
-        }
+    for (let i = 0; i < option.length; i++) {
+        if (option[i].selected == true) {
+            if (option[i].value != '') {
+                dataToUpdate.category = option[i].value;
+                view.setErrorMessage('category-error', '')
+            } else {
+                view.setErrorMessage('category-error', 'Please choose the Category of Item!')
+            }
+        };
     }
+
+    // if (controller.validateForm(dataToUpdate)) {
+    if (files.length > 1 && files.length < 3) {
+        console.log('2');
+        view.setErrorMessage('img-error', 'Choose at least 4 Images');
+    } else if (files.length == 0) {
+        dataToUpdate.img = [...data.img];
+        console.log('3');
+    } else {
+        console.log('4');
+        view.loadingScreen('block');
+        let img = await model.uploadImgToFirestorage(files);
+        view.loadingScreen('none');
+        dataToUpdate.img = [...img];
+    }
+    // }
+
+    console.log('5');
     model.update(data.id, dataToUpdate, 'products')
 };
 
@@ -326,7 +354,7 @@ view.htmlDetailProduct = (data) => {
     return html
 };
 
-view.htmlInputProduct = (data) => {
+view.htmlUpdateProductForm = (data) => {
     const html = ` 
     <form id="updateForm">
         <div class="right__inputWrapper">
@@ -336,7 +364,10 @@ view.htmlInputProduct = (data) => {
         </div>
         <div class="right__inputWrapper">
             <label for="title">Category</label>
-            <input type="text" name="category" placeholder="Category" value="${data.category}">
+            <select name="category" id="optionCategory" >
+                <option></option>
+                <!-- JS CODE  -->
+            </select>
             <div class="error" id="category-error"></div>
         </div>
         <div class="right__inputWrapper">
@@ -352,7 +383,7 @@ view.htmlInputProduct = (data) => {
         <div class="right__inputWrapper">
             <label for="title">Quantity</label>
             <input type="text" name="quantity" placeholder="Quantity" value="${data.availableQuantity}">
-            <div class="error" id="quantity-error"></div>
+            <div class="error" id="availableQuantity-error"></div>
         </div>
         <div class="right__inputWrapper">
             <label for="title">Rear Camera</label>
@@ -420,6 +451,7 @@ view.htmlInputProduct = (data) => {
         </div>
     </form>
     <button id="addBtn" class="btn" disabled >Update</button>`;
+
     return html;
 };
 
@@ -682,6 +714,8 @@ view.updateOrder = (data) => {
         address: updateForm.address.value,
     };
 
+
+    // đoạn này chạy vògn for để xem ng dùng chọn option nào
     for (let i = 0; i < option.length; i++) {
         if (option[i].selected == true) {
             dataToUpdate.status = option[i].value;
@@ -748,9 +782,34 @@ view.showCustomer = async (index, option) => {
             </tr>`;
         }
     } else if (option == 'update') {
-
         mainInformation.innerHTML = view.htmlInputCustomer(data[index]);
+        let optionGender = document.getElementById('optionGender');
+        console.log(data[index].gender);
+        if (data[index].gender == 'male') {
+            optionGender.innerHTML = `
+            <option value="male" selected >Male</option>
+            <option value="female" >Female</option>`
+        } else {
+            optionGender.innerHTML = `
+            <option value="male" >Male</option>
+            <option value="female" selected>Female</option>`
+        }
         view.listenEventUpdate(index, 'customer');
+    }
+};
+
+view.removeCustomer = (collection, id) => {
+    let data = model.usersData;
+    for (let item of data) {
+        if (item.id == id) {
+            if (!item.createdOrders) {
+                if (confirm('Do You Want Remove This User?')) {
+                    model.removeItem(collection, id)
+                }
+            } else {
+                alert("Can't Remove this User!")
+            }
+        }
     }
 };
 
@@ -759,7 +818,7 @@ view.htmlCustomerList = (data, i) => {
     <tr>
         <td>${i + 1}</td>
         <td data-label="">${data.id}</td>
-        <td data-label=""> ${data.name}</td>
+        <td data-label="">${data.name}</td>
         <td data-label="">${data.createdOrders}</td>
         <td data-label="">${data.memberShip} point</td>
         <td data-label="">    
@@ -769,7 +828,7 @@ view.htmlCustomerList = (data, i) => {
         </td>
         <td data-label="Detail" class="right__iconTable" onclick="view.showCustomer(${i},'view')"><img src="assets/eye.png" alt=""></td>
         <td data-label="Edit" class="right__iconTable" onclick="view.showCustomer(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
-        <td data-label="Delete" class="right__iconTable" onclick="model.removeItem('users','${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
+        <td data-label="Delete" class="right__iconTable" onclick="view.removeCustomer('users','${data.id}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html;
 };
@@ -789,7 +848,9 @@ view.htmlInputCustomer = (data) => {
         </div>
         <div class="right__inputWrapper">
             <label for="title">Gender</label>
-            <input type="text" name="gender" placeholder="Gender" value="${data.gender}">
+            <select name="category" id="optionGender">
+                <!-- JS CODE-->
+            </select>
             <div class="error" id="gender-error"></div>
         </div>
         <div class="right__inputWrapper">
@@ -863,45 +924,29 @@ view.htmlDetailCustomer = (data) => {
     return html;
 };
 
-view.addCustomer = () => {
-    addCustomerForm = document.getElementById('addCustomerForm');
-
-    let dataToAdd = {
-        email: addCustomerForm.email.value,
-        password: addCustomerForm.password.value,
-        name: addCustomerForm.name.value,
-        dob: addCustomerForm.dob.value,
-        gender: addCustomerForm.gender.value,
-        phone: addCustomerForm.phone.value,
-        address: addCustomerForm.address.value,
-
-        avatar: 'https://huyhoanhotel.com/wp-content/uploads/2016/05/765-default-avatar.png',
-        createdOrders: 0,
-        memberShip: 0,
-        status: true,
-        role: 'user'
-    }
-    console.log(dataToAdd);
-    if (view.checkInvalidDate(addCustomerForm.dob.value)) {
-        if (controller.validateForm(dataToAdd)) {
-            model.addCustomer(dataToAdd);
-        }
-    }
-
-};
-
 view.updateCustomer = (data) => {
     const updateForm = document.getElementById('updateForm');
+    let option = document.getElementsByTagName("option");
 
     const dataToUpdate = {
         name: updateForm.name.value,
         dob: updateForm.dob.value,
-        gender: updateForm.gender.value,
         phone: updateForm.phone.value,
         address: updateForm.address.value,
         password: updateForm.password.value
     };
 
+
+    for (let i = 0; i < option.length; i++) {
+        if (option[i].selected == true) {
+            if (option[i].value != '') {
+                dataToUpdate.gender = option[i].value;
+                view.setErrorMessage('gender-error', '')
+            } else {
+                view.setErrorMessage('gender-error', 'Please choose the Gender of Customer!')
+            }
+        };
+    }
     if (view.checkInvalidDate(updateForm.dob.value)) {
         if (controller.validateForm(dataToUpdate)) {
             model.update(data.id, dataToUpdate, 'users');
@@ -980,11 +1025,11 @@ view.removeCategory = async (collection, id, brand) => {
     for (let data of dataProducts) {
         if (data.category.toLowerCase() == brand.toLowerCase()) {
             flag = false
-        }   
+        }
     }
-    if(flag){
+    if (flag) {
         model.removeItem(collection, id);
-    }else{
+    } else {
         alert("Can't Delete This Item!")
     }
 };
@@ -1028,11 +1073,7 @@ view.checkDuplicateBrand = async (inputBrand) => {
     return flag;
 };
 
-
 //=================================================================================================================================
-
-
-
 
 // REPORT PAGE=====================================================================================================================
 
@@ -1041,6 +1082,7 @@ view.getDateRange = () => {
     let startDate = document.getElementById('strDate').value;
     let endDate = document.getElementById('endDate').value;
     view.showReportPage(startDate, endDate);
+    view.loadChart(startDate, endDate);
 };
 
 // function show ra trang report
@@ -1049,11 +1091,6 @@ view.showReportPage = async (startDate, endDate) => {
     let dataRangeByDate = [];
     const topPerformProduct_tbody = document.getElementById('topPerformProduct_tbody')
     const chart = document.getElementById('chart');
-    document.getElementById('orderNumber').innerText = dataRangeByDate.length;
-    document.getElementById('totalRevenueNumber').innerText = `$ ${totalRevenue}`;
-    document.getElementById('shipCostNumber').innerText = `$ ${dataRangeByDate.length * 3}`;
-    document.getElementById('totalProfitNumber').innerText = `$ ${totalRevenue - dataRangeByDate.length * 3}`;
-    document.getElementById('averageNumber').innerText = `$ ${Math.floor(totalRevenue / dataRangeByDate.length)}`;
 
     // lấy ra các order trong khảong tgian
     for (let i = 0; i < dataOrders.length; i++) {
@@ -1062,22 +1099,27 @@ view.showReportPage = async (startDate, endDate) => {
             dataRangeByDate.push(dataOrders[i])
         }
     }
-    
+
     let totalRevenue = view.totalRevenueOrder(dataRangeByDate);
     let dataTopPerformProduct = view.getDataTopPerformProduct(dataRangeByDate);
 
+    document.getElementById('orderNumber').innerText = dataRangeByDate.length;
+    document.getElementById('totalRevenueNumber').innerText = `$ ${totalRevenue}`;
+    document.getElementById('shipCostNumber').innerText = `$ ${dataRangeByDate.length * 3}`;
+    document.getElementById('totalProfitNumber').innerText = `$ ${totalRevenue - dataRangeByDate.length * 3}`;
+    document.getElementById('averageNumber').innerText = `$ ${Math.floor(totalRevenue / dataRangeByDate.length)}`;
     //console.log(dataTopPerformProduct);
     topPerformProduct_tbody.innerHTML = '';
     for (let data of dataTopPerformProduct) {
         topPerformProduct_tbody.innerHTML += view.htmlItemTopPerformProduct(data, totalRevenue);
     }
-    view.loadChart(startDate, endDate);
 };
 
 //func này load ra cái biểu đồ
 view.loadChart = async (startDate, endDate) => {
+
     let rangeDateValue = view.rangeDate(startDate, endDate)
-    //console.log(rangeDateValue);
+    console.log(rangeDateValue);
     let dataOrders = await model.getOrdersData();
     dataOrders.sort((a, b) => (a.createAt > b.createAt) ? 1 : ((b.createAt > a.createAt) ? -1 : 0));
 
@@ -1087,29 +1129,38 @@ view.loadChart = async (startDate, endDate) => {
         i++
         for (let createDate of dataOrders) {
             if (date == formatDate(createDate.createAt)) {
-                total = await view.getOrderTotalbyDay(formatDate(createDate.createAt))
+                total = view.getOrderTotalbyDay(formatDate(createDate.createAt))
                 rangeRevenue[i] = total;
             }
         }
     }
-    console.log(rangeRevenue);
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+
+    let ctx = document.getElementById('myChart').getContext('2d');
+    let myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: [...rangeDateValue],
             datasets: [{
                 label: 'The Line Chart Represents the Revenue',
                 data: [...rangeRevenue],
-                borderWidth: 1
+                borderWidth: 1,
+                backgroundColor: ['rgba(255,99,132,0.2)'],
+                borderColor: ['rgba(255,99,132,1)']
+
             }]
         },
         options: {
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        callback: function (value, index, values) {
+                            return '$ ' + value;
+                        }
                     }
+
+
+
                 }]
             }
         }
@@ -1118,8 +1169,6 @@ view.loadChart = async (startDate, endDate) => {
 
 // đoạn này tạo bước nhảy giữa các ngày
 view.rangeDate = (startDate, endDate) => {
-    // console.log(startDate);
-    // console.log(endDate);
     let listDate = [];
     let dateMove = new Date(startDate);
     let strDate = startDate;
@@ -1132,8 +1181,8 @@ view.rangeDate = (startDate, endDate) => {
     return listDate;
 };
 //function này tính tổng giá trị order trong 1 ngày
-view.getOrderTotalbyDay = async (date) => {
-    let dataOrders = await model.getOrdersData();
+view.getOrderTotalbyDay = (date) => {
+    let dataOrders = model.ordersData;
     let orderInDay = [];
     let total = 0;
 
@@ -1184,7 +1233,7 @@ view.getDataTopPerformProduct = (dataRangeByDate) => {
         else {
             unique.forEach(item => {
                 if (item.id === elm.id) {
-                    item.inCart = Number(item.inCart) + Number(elm.inCart);
+                    item.inCart = item.inCart + elm.inCart;
                 }
             })
         }
@@ -1213,14 +1262,14 @@ view.setScreenBtn = (value) => {
 view.signOutButton = () => {
     if (confirm('Are you sure?')) {
         firebase.auth().signOut();
-        model.currentUser = {};
+        view.setScreenBtn('loginPage')
         localStorage.removeItem('currentLocationScreen');
-        model.productData = [];
     }
 };
 
 // đoạn này in ra lỗi mỗi khi đoạn input có vấn đề
 view.setErrorMessage = (elementId, content) => {
+    console.log(elementId);
     document.getElementById(elementId).innerText = content;
 };
 

@@ -12,26 +12,14 @@ window.onload = () => {
     firebase.initializeApp(firebaseConfig);
 
 
-    //view.setActiveScreen(model.currentLocationScreen);
-
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-            model.currentUser = {
-                displayName: user.displayName,
-                email: user.email,
-            }
-            if (user.emailVerified) {
-                if(!model.currentLocationScreen)   {
-                    view.setActiveScreen('homePage');
-                }else{
-                    view.setActiveScreen(model.currentLocationScreen);
-                }
+            if (!model.currentLocationScreen) {
+                view.setScreenBtn('homePage');
             } else {
-                alert('Please Verified Your Email');
-                firebase.auth().signOut();
+                view.setActiveScreen(model.currentLocationScreen);
             }
         } else {
-            console.log('in Login Page');
             view.setActiveScreen('loginPage');
         }
     });

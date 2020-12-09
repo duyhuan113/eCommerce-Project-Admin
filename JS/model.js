@@ -5,12 +5,11 @@ model.ordersData = undefined;
 model.currentUser = undefined;
 model.currentLocationScreen = localStorage.getItem('currentLocationScreen');
 
+
 model.login = (data) => {
     try {
         console.log('Login...');
         firebase.auth().signInWithEmailAndPassword(data.email, data.password);
-        // đoạn này sau khi login thành công, chuyển tiếp email vừa dùng để check role
-        //view.setScreenBtn('homePage');
     } catch (err) {
         console.log(err);
         alert(err.message)
@@ -46,6 +45,8 @@ model.getOrdersData = async () => {
     } else if (model.currentLocationScreen == 'orderPage') {
         view.showOrderList(model.ordersData);
     }
+
+    return model.ordersData;
 };
 
 //function này lấy order by id 
@@ -54,11 +55,10 @@ model.getOrdersDatabyId = async (id) => {
     return getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));
 };
 
-model.getCollectionData = async (collection)=>{
+model.getCollectionData = async (collection) => {
     const response = await firebase.firestore().collection(collection).get()
     return getDataFromDocs(response.docs).sort((a, b) => (a.createAt < b.createAt) ? 1 : ((b.createAt < a.createAt) ? -1 : 0));
 }
-
 
 model.uploadImgToFirestorage = async (files) => {
     let images = [];
@@ -80,12 +80,7 @@ model.uploadImgToFirestorage = async (files) => {
 
 model.addItem = (collection, data) => {
     firebase.firestore().collection(collection).doc().set(data);
-    
-};
 
-model.addCustomer = (data) => {
-    firebase.firestore().collection('users').doc(data.email).set(data);
-    console.log('OK');
 };
 
 model.update = async (id, data, collection) => {
@@ -109,7 +104,6 @@ model.removeItem = (collection, id) => {
     };
 };
 
-
 //function này update Status cho cả product và customer
 model.updateStatus = async (collection, id, value) => {
     await firebase.firestore().collection(collection).doc(id).update({ status: value });
@@ -119,15 +113,9 @@ model.updateStatus = async (collection, id, value) => {
 
 // function này update Status cho Order
 model.updateStatusOrder = async (id, status) => {
-    console.log(id);
-    console.log(status);
     await firebase.firestore().collection('orders').doc(id).update({ status: status });
     model.getOrdersData();
 };
-
-
-
-
 
 //đoạn này lấy Data từ doc
 getDataFromDocs = (docs) => {

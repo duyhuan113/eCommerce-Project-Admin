@@ -16,13 +16,12 @@ controller.login = (data) => {
     };
 };
 
-
 controller.validateForm = (data) => {
     let isNotEmpty = true;
     for (let property in data) {
-        if (data[property] === '') {
+        if (data[property] == '') {
             view.setErrorMessage(`${property}-error`, 'Field is Required ');
-            console.log(`${property}-error`);
+            // console.log(`${property}-error`);
             isNotEmpty = false;  
         }else{
             view.setErrorMessage(`${property}-error`, '');
@@ -30,7 +29,6 @@ controller.validateForm = (data) => {
     };
     return isNotEmpty;
 };
-
 
 function validateEmail(email) {
     const emailFomat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

@@ -24,66 +24,59 @@ component.loginPage = `
 `;
 
 component.sideBar = `
-    <div class="left">
-        <span lass="left__icon">
-            <span></span>
-            <span></span>
-            <span></span>
-        </span>
-        <div class="left__content">
-            <div class="left__logo" onclick="view.setScreenBtn('homePage')" ><img src="IMG/logoshop.png"> </div>
-            <div class="left__profile">
-                <div class="left__image"><img src="assets/goku.jfif" alt=""></div>
-                <p class="left__name">Supper Saya</p>
-            </div>
-            <ul class="left__menu">
-                
-                <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('homePage')"></i>DashBoard</div>
-                    
-                </li>
-                <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('productPage')">Product<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-                    <div class=" dropdown-content">
-                        <a onclick="view.setScreenBtn('addProduct')" href="">Add Product</a>
-                    </div>
-                </li>
-                <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('categoryPage')">Category<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-                    <div class=" dropdown-content">
-                        <a onclick="view.setScreenBtn('addCategory')" href="">Add Category</a>
-                    </div>
-                </li>
-                
-                <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('customerPage')">Customer<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-                    <div class=" dropdown-content">
-                        <a onclick="view.setScreenBtn('addCustomer')" href="">Add Customer</a>
-                    </div>
-                </li>
-                <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('orderPage')">Order<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-                    <div class=" dropdown-content">
-                        <a onclick="view.setScreenBtn('reportPage')" href="">View Report</a>
-                    </div>
-                </li>
-                <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.setScreenBtn('viewAdminPage')">Admin<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-                    <div class=" dropdown-content">
-                        <a onclick="view.setScreenBtn('addAdmin')" href="">Add Admin Account</a>
-                    </div>
-                </li>
-                <li class=" dropdown">
-                    <div class="dropbtn" onclick="view.signOutButton()">LogOut</div>
-                </li>
-            </ul>
+<div class="left">
+    <span lass="left__icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </span>
+    <div class="left__content">
+        <div class="left__logo" onclick="view.setScreenBtn('homePage')"><img src="IMG/logoshop.png"> </div>
+        <div class="left__profile">
+            <div class="left__image"><img src="assets/goku.jfif" alt=""></div>
+            <p class="left__name">Supper Saya</p>
         </div>
+        <ul class="left__menu">
+
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('homePage')"></i>DashBoard</div>
+
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('productPage')">Product<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                <div class=" dropdown-content">
+                    <a onclick="view.setScreenBtn('addProduct')" href="">Add Product</a>
+                </div>
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('categoryPage')">Category<img
+                        class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                <div class=" dropdown-content">
+                    <a onclick="view.setScreenBtn('addCategory')" href="">Add Category</a>
+                </div>
+            </li>
+
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('customerPage')">Customer</div>
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('orderPage')">Order<img class="left__iconDown"
+                        src="assets/arrow-down.svg" alt=""></div>
+                <div class=" dropdown-content">
+                    <a onclick="view.setScreenBtn('reportPage')" href="">View Report</a>
+                </div>
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.signOutButton()">LogOut</div>
+            </li>
+        </ul>
+    </div>
     </div>
     <!-- div Loading -->
     <div id="loading" style=" display: none;">
-        <div class="overLay"></div>
-        <div class="loader"></div>
-    </div>
+    <div class="overLay"></div>
+    <div class="loader"></div>
+</div>
 `;
 
 component.homePage = `
@@ -232,7 +225,10 @@ component.addProduct = `
                                 </div>
                                 <div class="right__inputWrapper">
                                     <label for="title">Category</label>
-                                    <input type="text" name="category" placeholder="Category" required>
+                                    <select name="category" id="optionCategory" >
+                                        <option></option>
+                                        <!-- JS CODE  -->
+                                    </select>
                                     <div class="error" id="category-error"></div>
                                 </div>
                                 <div class="right__inputWrapper">
@@ -321,58 +317,6 @@ component.addProduct = `
                     </div>
                 </div>
             </div>
-    </div>`;
-
-component.addCustomer = `
-    <div class="wrapper">
-        <div id="dashBoard" class="dashboard">
-            <div class="right">
-                <div class="right__content">
-                    <div class="right__title">Add Customer</div>
-                    <div class="right__formWrapper">
-                    <form id="addCustomerForm">
-                        <div class="right__inputWrapper">
-                            <label for="title">Email</label>
-                            <input type="email" name="email" placeholder="Email" >
-                            <div class="error" id="email-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="title">Password</label>
-                            <input type="password" name="password" placeholder="Password" >
-                            <div class="error" id="password-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="p_name">Name</label>
-                            <input type="text" name="name" placeholder="Name" >
-                            <div class="error" id="name-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="title">Date of Birth</label>
-                            <input type="date" name="dob"  >
-                            <div class="error" id="dob-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="title">Gender</label>
-                            <input type="text" name="gender" placeholder="Gender" >
-                            <div class="error" id="gender-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="category">Phone</label>
-                            <input type="text" name="phone" placeholder="Phone" >
-                            <div class="error" id="phone-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="title">Address</label>
-                            <input type="text" name="address" placeholder="Address" >
-                            <div class="error" id="address-error"></div>
-                        </div>
-                    </form>
-                    <button id="addBtn" class="btn" >Add</button>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
     </div>`;
 
 component.orderPage = `
@@ -625,31 +569,36 @@ component.reportPage = `
                             <div id="averageNumber" class="right__cardNumber">$ 0</div>
                         </a>
                     </div>
-                    <div id="topPerformProduct" class="topPerformProduct">
-                        <h1>TOP PERFORM PRODUCT</h1>
-                        <table >
-                            <thead>
-                                <tr>
-                                    <th style="width: 200px;">Product Name</th>
-                                    <th style="width: 100px;">Profit</th>
-                                    <th style="width: 100px;">Margin</th>
-                                </tr>
-                            </thead>
-                            <tbody id="topPerformProduct_tbody">
-                                
-                            </tbody>
-                        </table>
+
+                    <div class="right_side">
+                        <div id="rangeMonths" class="rangeMonths">
+                            <h1>DATE RANGE</h1>
+                            <h3 for="strDate"> START DATE</h3>
+                            <input id="strDate" type="date" value="2020-11-01">
+                            <h3 for="endDate"> END DATE</h3>
+                            <input id="endDate" type="date" value="2020-11-30">
+                            <button id="viewDateRangeBtn" class="btn" onclick="view.getDateRange()">View</button>
+                        </div>
+                        <div id="topPerformProduct" class="topPerformProduct">
+                            <h1>TOP PERFORM PRODUCT</h1>
+                            <table >
+                                <thead>
+                                    <tr>
+                                        <th style="width: 200px;">Product Name</th>
+                                        <th style="width: 100px;">Profit</th>
+                                        <th style="width: 100px;">Margin</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topPerformProduct_tbody">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div id="rangeMonths" class="rangeMonths">
-                        <h1>DATE RANGE</h1>
-                        <h3 for="strDate"> START DATE</h3>
-                        <input id="strDate" type="date" value="2020-11-01">
-                        <h3 for="endDate"> END DATE</h3>
-                        <input id="endDate" type="date" value="2020-11-30">
-                        <button id="viewDateRangeBtn" class="btn" onclick="view.getDateRange()">View</button>
-                    </div>
+                    
+                    
                     <div class="right__table" style="height:600px;width:900px;">
-                        <canvas id="myChart" width="400" height="400"></canvas>
+                        <canvas id="myChart" width="450" height="380"></canvas>
                     </div>
                 </div>
             </div>
@@ -658,41 +607,44 @@ component.reportPage = `
 
 component.viewAdminPage = `
 <div class="wrapper">
-    <div id="dashBoard" class="dashboard">
-        <div class="right">
-            <div class="right__content">
-                <div class="right__title">View Category</div>
-                <div class="right__table">
-                    <div class="topnav">
-                        <form>
-                            <input id="inputSearch" type="text" placeholder="Search...">
-                            <button id="btnSearch" >Search</button>
-                        </form>
-                    </div>
-                    <div class="right__tableWrapper">
-                        <table width="100%">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Category ID</th>
-                                    <th>Brand Name</th>
-                                    <th>DesCription</th>
-                                    <th>Image</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody id="category_tbody">
-                                
-                            </tbody>
-                        </table>
+        <div id="dashBoard" class="dashboard">
+            <div class="right">
+                <div class="right__content">
+                    <div class="right__title">View Admin Account</div>
+                    <div class="right__table">
+                        <div class="topnav">
+                            <form>
+                                <input id="inputSearch" type="text" placeholder="Search...">
+                                <button id="btnSearch" >Search</button>
+                            </form>
+                        </div>
+                        <div class="right__tableWrapper">
+                        <div class="right__tableWrapper">
+                            <table width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Username</th>
+                                        <th>Name</th>
+                                        <th>Banned</th>
+                                        <th>View</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th> 
+                                    </tr>
+                                </thead>
+                                <tbody id="adminAccount_tbody">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    <!-- div Update, div này bị ẩn -->
+     
+    <!-- div Update, div này bị bẩn -->
     <div id="myModal" class="modal">
         <!-- Modal content -->
         <div class="modal-content">
@@ -703,41 +655,18 @@ component.viewAdminPage = `
                         <div id="mainInformation" class="information">
                             
                         </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- div Loading -->
+    <div id="loading" style=" display: none;">
+        <div class="overLay"></div>
+        <div class="loader"></div>
+    </div>
 </div>
 `;
 
-component.addAdmin = `
-<div class="wrapper">
-    <div id="dashBoard" class="dashboard">
-        <div class="right">
-            <div class="right__content">
-                <div class="right__title">Add Admin</div>
-                <div class="right__formWrapper">
-                    <form id="addCategoryForm"  >
-                        <div class="right__inputWrapper">
-                            <label for="p_category">Brand Name</label>
-                            <input type="text" name="brand" placeholder="Brand Name" required>
-                            <div class="error" id="brand-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="title">Description</label>
-                            <input type="text" name="des" placeholder="Description" required>
-                            <div class="error" id="des-error"></div>
-                        </div>
-                        <div class="right__inputWrapper">
-                            <label for="image">Select Image </label>
-                            <input id="photo" type="file" name="img" >
-                            <div class="error" id="img-error"></div>
-                        </div>
-                    </form>
-                    <button id="addBtn" class="btn" >Add</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>`;
