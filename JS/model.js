@@ -80,7 +80,6 @@ model.uploadImgToFirestorage = async (files) => {
 
 model.addItem = (collection, data) => {
     firebase.firestore().collection(collection).doc().set(data);
-
 };
 
 model.update = async (id, data, collection) => {

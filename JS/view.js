@@ -1,10 +1,9 @@
 const view = {};
 
-view.setActiveScreen = (screenName) => {
+view.setActiveScreen = async (screenName) => {
     switch (screenName) {
         case 'loginPage':
-
-            document.getElementById('app').innerHTML += component.loginPage;
+            document.getElementById('app').innerHTML = component.loginPage;
             const loginForm = document.getElementById('login-form');
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -16,55 +15,72 @@ view.setActiveScreen = (screenName) => {
             });
             break;
         case 'homePage':
-            document.getElementById('app').innerHTML += component.homePage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
+            document.getElementById('dashBoard').innerHTML += component.homePage;
+            //document.getElementById('app').insertAdjacentHTML('afterbegin', component.homePage);
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             model.getProductsData();
 
             break;
         case 'productPage':
-            document.getElementById('app').innerHTML += component.productPage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
+            document.getElementById('dashBoard').innerHTML += component.productPage;
+            //document.getElementById('app').innerHTML += component.productPage;
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             view.showProductList();
             view.searchByName();
+            
 
             break;
         case 'addProduct':
-            document.getElementById('app').innerHTML += component.addProduct;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
+            document.getElementById('dashBoard').innerHTML += component.addProduct;
+
+            CKEDITOR.replace('editor1');
+            //document.getElementById('app').innerHTML += component.addProduct;
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar)
             view.loadOptionCategory();
             document.getElementById('addBtn').addEventListener('click', () => {
                 view.addProduct();
             });
             break;
         case 'orderPage':
-            document.getElementById('app').innerHTML += component.orderPage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            document.getElementById('dashBoard').innerHTML += component.orderPage;
+
+            // document.getElementById('app').innerHTML += component.orderPage;
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             model.getOrdersData();
             view.searchByName();
+            
             break;
 
         case 'reportPage':
-            document.getElementById('app').innerHTML += component.reportPage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            document.getElementById('dashBoard').innerHTML += component.reportPage;
+
+            // document.getElementById('app').innerHTML += component.reportPage;
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             view.getDateRange();
             break;
 
         case 'customerPage':
-            document.getElementById('app').innerHTML += component.customerPage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            document.getElementById('dashBoard').innerHTML += component.customerPage;
+
+            // document.getElementById('app').innerHTML += component.customerPage;
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             model.getUsersData();
             view.searchByName();
             break;
 
         case 'categoryPage':
-            document.getElementById('app').innerHTML += component.categoryPage;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            document.getElementById('dashBoard').innerHTML += component.categoryPage;
+
+            // document.getElementById('app').innerHTML += component.categoryPage;
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             view.showCategoryList();
             break;
 
         case 'addCategory':
-            document.getElementById('app').innerHTML += component.addCategory;
-            document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
+            document.getElementById('dashBoard').innerHTML += component.addCategory;
+
+            // document.getElementById('app').innerHTML += component.addCategory;
+            // document.getElementById('dashBoard').insertAdjacentHTML('afterbegin', component.sideBar);
             document.getElementById('addBtn').addEventListener('click', () => {
                 view.addCategory();
             });
@@ -89,9 +105,6 @@ view.showDashBoard = (data) => {
         view.setStatusOrder(ordersData[i], i)
     }
 };
-
-
-
 
 
 // ==================================================================================================================================================
@@ -173,6 +186,7 @@ view.addProduct = async () => {
         name: addProductForm.name.value,
         price: addProductForm.price.value,
         color: addProductForm.color.value,
+        category: addProductForm.category.value,
         availableQuantity: addProductForm.quantity.value,
         detail: {
             rearCam: addProductForm.rearCam.value,
@@ -187,33 +201,31 @@ view.addProduct = async () => {
             releaseDate: addProductForm.releaseDate.value,
         },
         video: addProductForm.video.value,
-        des: addProductForm.des.value,
         status: true,
         createAt: new Date().toISOString()
     };
 
-    for (let i = 0; i < option.length; i++) {
-        if (option[i].selected == true) {
-            if (option[i].value != '') {
-                data.category = option[i].value;
-                view.setErrorMessage('category-error', '')
-            } else {
-                view.setErrorMessage('category-error', 'Please choose the Category of Item!')
-            }
-        };
-    }
+    let des = CKEDITOR.instances.editor1.getData()
+    data.des = des;
 
-    // if (files.length >= 3) {
-    //     if (controller.validateForm(data)) {
-    view.loadingScreen('block')
-    let img = await model.uploadImgToFirestorage(files);
-    view.loadingScreen('none')
-    data.img = [...img];
-    model.addItem('products', data);
-    // }
-    // } else {
-    //     view.setErrorMessage('img-error', 'Choose at least 4 Images')
-    // }
+    console.log(addProductForm.category.value);
+    console.log(addProductForm.color.value);
+
+
+
+
+    if (files.length >= 3) {
+        if (controller.validateAddProductForm(data)) {
+            console.log('ok');
+            view.loadingScreen('block')
+            let img = await model.uploadImgToFirestorage(files);
+            view.loadingScreen('none')
+            data.img = [...img];
+            model.addItem('products', data);
+        }
+    } else {
+        view.setErrorMessage('img-error', 'Choose at least 4 Images')
+    }
 };
 
 
@@ -240,11 +252,14 @@ view.showProduct = (index, option) => {
     };
 
     if (option == 'view') {
+        console.log(option);
         mainInformation.innerHTML = view.htmlDetailProduct(productsData[index]);
     } else if (option == 'update') {
-        mainInformation.innerHTML = view.htmlUpdateProductForm(productsData[index]);
-        view.loadOptionCategory();
+        console.log(option);
 
+        mainInformation.innerHTML = view.htmlUpdateProductForm(productsData[index]);
+        CKEDITOR.replace('editor1');
+        view.loadOptionCategory();
         view.listenEventUpdate(index, 'product');
     }
 };
@@ -258,6 +273,7 @@ view.updateProduct = async (data) => {
         name: updateForm.name.value,
         price: updateForm.price.value,
         color: updateForm.color.value,
+        category: updateForm.category.value,
         availableQuantity: updateForm.quantity.value,
         detail: {
             rearCam: updateForm.rearCam.value,
@@ -272,185 +288,324 @@ view.updateProduct = async (data) => {
             releaseDate: updateForm.releaseDate.value,
         },
         video: updateForm.video.value,
-        des: updateForm.des.value
     };
-    for (let i = 0; i < option.length; i++) {
-        if (option[i].selected == true) {
-            if (option[i].value != '') {
-                dataToUpdate.category = option[i].value;
-                view.setErrorMessage('category-error', '')
-            } else {
-                view.setErrorMessage('category-error', 'Please choose the Category of Item!')
-            }
-        };
+
+    let des = CKEDITOR.instances.editor1.getData()
+    dataToUpdate.des = des;
+
+    if (controller.validateAddProductForm(dataToUpdate)) {
+        if (files.length > 1 && files.length < 3) {
+            console.log('2');
+            view.setErrorMessage('img-error', 'Choose at least 4 Images');
+        } else if (files.length == 0) {
+            dataToUpdate.img = [...data.img];
+            console.log('3');
+        } else {
+            console.log('4');
+            view.loadingScreen('block');
+            let img = await model.uploadImgToFirestorage(files);
+            view.loadingScreen('none');
+            dataToUpdate.img = [...img];
+        }
     }
 
-    // if (controller.validateForm(dataToUpdate)) {
-    if (files.length > 1 && files.length < 3) {
-        console.log('2');
-        view.setErrorMessage('img-error', 'Choose at least 4 Images');
-    } else if (files.length == 0) {
-        dataToUpdate.img = [...data.img];
-        console.log('3');
-    } else {
-        console.log('4');
-        view.loadingScreen('block');
-        let img = await model.uploadImgToFirestorage(files);
-        view.loadingScreen('none');
-        dataToUpdate.img = [...img];
-    }
-    // }
-
-    console.log('5');
     model.update(data.id, dataToUpdate, 'products')
 };
 
 view.htmlDetailProduct = (data) => {
+    let dataDetail = data.detail
     html = `
+    <div class="tbl-pro-detail" >
+        <table>
+            <thead>
+                <tr>
+                    <th class="radius-tl" style="width:30%;">ID</th>
+                    <th style="width:20%;">Category</th>
+                    <th style="width:17%;">Color</th>
+                    <th style="width:28%;">Price</th>
+                    <th class="radius-tr" style="width:15%;">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>${data.id}</td>
+                    <td>${data.category}</td>
+                    <td>${data.color}</td>
+                    <td>${data.price}$</td>
+                    <td>${data.availableQuantity}</td>
+                </tr>
+            </body>
+        </table>
+    </div>
     <div class="img_pro">
-        <img src="${data.img[0]}" alt="">
-        <div class="list_img">
-            <ul>
-                <li><img src="${data.img[1]}" alt=""></li>
-                <li><img src="${data.img[2]}" alt=""></li>
-                <li><img src="${data.img[3]}" alt=""></li>
-            </ul>
+        <div class="img-slider">
+            <div class="img-slides">
+                <div id="img-0"> <img src="${data.img[0]}"> </div>
+                <div id="img-1"><img src="${data.img[1]}" ></div>
+                <div id="img-2"><img src="${data.img[2]}" ></div>
+                <div id="img-3"><img src="${data.img[3]}" ></div>
+            </div>
+            <a href="#img-0"> <img src="${data.img[0]}"></a>
+            <a href="#img-1"> <img src="${data.img[1]}"></a>
+            <a href="#img-2"> <img src="${data.img[2]}"></a>
+            <a href="#img-3"> <img src="${data.img[3]}"></a>
         </div>
     </div>
     <div class="main_infor">
-        <div class="infro_detail">
-            <h1>${data.name}</h1>
-        </div>
-        <div class="infro_detail">
-            <label><b> ID: </b></label><span>${data.id}</span>
-        </div>
-        <div class="infro_detail">
-            <label><b> Category: </b></label><span>${data.category}</span>
-        </div>
-        <div class="infro_detail">
-            <label><b> Color: </b></label><span>${data.color}</span>
-        </div>
-        <div class="infro_detail">
-            <label> <b>Quantity:</b></label><span>${data.availableQuantity}</span>
-        </div>
-        <div class="infro_detail">
-            <label> <b>Price:</b> </label> <span class="price">${data.price}$</span>
-        </div>
-        <div class="infro_detail">
-            <label><b> Created: </b></label><span>${data.createAt} </span>
-        </div>
-        <div class="infro_detail">
-            <h4>Description:</h4>
-            <div class="main_des">
-                <span>${data.des}</span>
-            </div>
-        </div>
+        <ul class="parameter">
+            <li>
+                <div>
+                    <h2 style="color:red;">${data.name}</h2>
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Font Camera:</b></label>
+                <div>
+                    ${dataDetail.fontCam}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Rear Camera:</b></label>
+                <div >
+                    ${dataDetail.rearCam}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Ram:</b></label>
+                <div>
+                    ${dataDetail.ram}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Capacity:</b></label>
+                <div>
+                    ${dataDetail.capacity}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Os:</b></label>
+                <div>
+                    ${dataDetail.os}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Chip:</b></label>
+                <div>
+                    ${dataDetail.chip}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Display:</b></label>
+                <div>
+                    ${dataDetail.display}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Battery:</b></label>
+                <div>
+                    ${dataDetail.battery}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>InTheBox:</b></label>
+                <div>
+                    ${dataDetail.inTheBox}
+                </div>
+            </li>
+            <li>
+                <label for="title"><b>Release Date:</b></label>
+                <div>
+                    ${dataDetail.releaseDate}
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="des-pro-detail">
+        <b >Description:</b>
+        <span> ${data.des}</span>
     </div>
     <div class="video">
-        <div class="video_cont">
-            ${data.video}
-        </div>
+    <b>Video introduction product:</b>
+           <div>${data.video} </div> 
     </div>`;
     return html
 };
 
 view.htmlUpdateProductForm = (data) => {
+    let dataDetail = data.detail
     const html = ` 
     <form id="updateForm">
-        <div class="right__inputWrapper">
-            <label for="p_name">Name</label>
-            <input type="text" name="name" placeholder="Name" value="${data.name}">
-            <div class="error" id="name-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Category</label>
-            <select name="category" id="optionCategory" >
-                <option></option>
-                <!-- JS CODE  -->
-            </select>
-            <div class="error" id="category-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Price</label>
-            <input type="text" name="price" placeholder="Price" value="${data.price}">
-            <div class="error" id="price-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="category">Color</label>
-            <input type="text" name="color" placeholder="Color" value="${data.color}">
-            <div class="error" id="color-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Quantity</label>
-            <input type="text" name="quantity" placeholder="Quantity" value="${data.availableQuantity}">
-            <div class="error" id="availableQuantity-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Rear Camera</label>
-            <input type="text" name="rearCam" placeholder="Rear Camera" value="${data.detail.rearCam}">
-            <div class="error" id="rearCam-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Font Camera</label>
-            <input type="text" name="fontCam" placeholder="Font Camera" value="${data.detail.fontCam}">
-            <div class="error" id="fontCam-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">RAM</label>
-            <input type="text" name="ram" placeholder="RAM" value="${data.detail.ram}">
-            <div class="error" id="ram-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Capacity</label>
-            <input type="text" name="capacity" placeholder="Capacity" value="${data.detail.capacity}">
-            <div class="error" id="capacity-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">OS</label>
-            <input type="text" name="os" placeholder="OS" value="${data.detail.os}">
-            <div class="error" id="os-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Chip</label>
-            <input type="text" name="chip" placeholder="Chip" value="${data.detail.chip}">
-            <div class="error" id="chip-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Display</label>
-            <input type="text" name="display" placeholder="Display" value="${data.detail.display}">
-            <div class="error" id="display-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Battery</label>
-            <input type="text" name="battery" placeholder="Battery" value="${data.detail.battery}">
-            <div class="error" id="battery-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">In The Box</label>
-            <input type="text" name="inTheBox" placeholder="In The Box" value="${data.detail.inTheBox}">
-            <div class="error" id="inTheBox-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Release Date</label>
-            <input type="text" name="releaseDate" placeholder="Release Date" value="${data.detail.releaseDate}">
-            <div class="error" id="releaseDate-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="image">Select Picture </label>
-            <input id="photo" type="file" name="img" multiple>
-            <div class="error" id="img-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="title">Video</label>
-            <input type="text" name="video" placeholder="Video" value="${data.video}">
-            <div class="error" id="video-error"></div>
-        </div>
-        <div class="right__inputWrapper">
-            <label for="desc">Description</label>
-            <textarea id="" cols="30" rows="10" name="des" placeholder="Description"  ></textarea>
+        <div class="add-pro">
+            <div class="row-pro">
+                <label for=""><b>Name:</b> </label>
+                <span><input name="name" type="text" class="form-control" placeholder="" style="width: 390px; "
+                        value="${data.name}"></span>
+                <div class="error" id="name-error"></div>
+            </div>
+            <div class="row-pro">
+                <div class="col-pro ma-55">
+                    <label for="Color"><b>Category:</b></label>
+                    <div> <select name="category" id="optionCategory" style="width:180px" class="form-control">
+                            <option value="${data.category}">${data.category}</option>
+                            <!-- JS CODE  -->
+                        </select></div>
+                    <div class="error" id="category-error"></div>
+                </div>
+                <div class="col-pro ma-30">
+                    <label for="Color"><b>Corlor:</b></label>
+                    <div>
+                        <select id="optionColor" class="form-control" name="color" style="width:180px">
+                            <option value="${data.color}">${data.color}</option>
+                            <option value="white">White</option>
+                            <option value="red">Red</option>
+                            <option value="grey">Grey</option>
+                            <option value="blue">BLue</option>
+                            <option value="gold">Gold</option>
+                            <div class="error" id="color-error"></div>
+                        </select>
+                    </div>
+                    <div class="error" id="color-error"></div>
+                </div>
+            </div>
+            <div class="row-pro">
+                <div class="col-pro ma-55">
+                    <label for=""><b>Quantity:</b> </label>
+                    <div>
+                        <input name="quantity"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            type="number" maxlength="6" style="width:180px;" class="form-control"
+                            value="${data.availableQuantity}">
+                    </div>
+                    <div class="error" id="availableQuantity-error"></div>
+                </div>
+                <div class="col-pro ma-30">
+                    <label for=""><b>Price:</b> </label>
+                    <div>
+                        <input name="price"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            type="number" maxlength="10" style="width:180px;" class="form-control"
+                            value="${data.price}">
+                    </div>
+                    <div class="error" id="price-error"></div>
+                </div>
+            </div>
+            <div class="row-pro">
+                <label for=""><b>Description:</b> </label>
+                <div class="text-des">
+                    <textarea id="editor1" name="des" id="" cols="30" rows="10"
+                        class="form-control">${data.des}</textarea>
+                </div>
+            </div>
+            <div class="row-pro">
+                <div class="col-pro ">
+                    <label for=""><b>Font Camera:</b> </label>
+
+                    <span><input name="fontCam" type="text" class="form-control" placeholder="" style="width: 280px;"
+                            value="${dataDetail.fontCam}"></span>
+
+                    <div class="error" id="fontCam-error"></div>
+                </div>
+            </div>
+            <div class="row-pro">
+                <div class="col-pro ">
+                    <label for=""><b>Rear Camera:</b> </label>
+
+                    <span><input name="rearCam" type="text" class="form-control" placeholder="" style="width: 280px;"
+                            value="${dataDetail.rearCam}"></span>
+
+                    <div class="error" id="rearCam-error"></div>
+                </div>
+            </div>
+            <div class="row-pro" style="margin-top:25px;">
+                <div class="col-pro ma-115">
+                    <label for=""><b>Ram:</b> </label>
+                    <div>
+                        <span><input name="ram" type="text" class="form-control" placeholder="" style="width: 143px;" value="${dataDetail.ram}"></span>
+                                
+                    </div>
+                    <div class="error" id="ram-error"></div>
+                </div>
+                <div class="col-pro ma-30">
+                    <label for=""><b>Capacity:</b> </label>
+                    <div>
+                        <span><input name="capacity" type="text" class="form-control" placeholder=""
+                                style="width: 143px;" value="${dataDetail.capacity}"></span>
+                    </div>
+                    <div class="error" id="capacity-error"></div>
+                </div>
+                <div class="col-pro ma-30">
+                    <label for=""><b>Battery:</b> </label>
+                    <div>
+                        <span><input name="battery" type="text" class="form-control" placeholder=""
+                                style="width: 143px;" value="${dataDetail.battery}"></span>
+                    </div>
+                    <div class="error" id="battery-error"></div>
+                </div>
+            </div>
+            <div class="row-pro" style="margin-top:25px;">
+                <div class="col-pro ma-115">
+                    <label for=""><b>Operation System:</b> </label>
+                    <div>
+                        <input name="os" type="text" class="form-control" style="width:230px" name="os" placeholder=""
+                            value="${dataDetail.os}">
+                    </div>
+                    <div class="error" id="os-error"></div>
+                </div>
+                <div class="col-pro ma-30">
+                    <label for=""><b>Display:</b> </label>
+                    <div>
+                        <input name="display" type=" text" class="form-control" placeholder="" style="width: 230px;"
+                            value="${dataDetail.display}">
+                    </div>
+                    <div class="error" id="display-error"></div>
+                </div>
+            </div>
+
+            <div class="row-pro">
+                <div class="col-pro">
+                    <label for=""><b>Chip:</b> </label>
+
+                    <span><input name="chip" type="text" class="form-control" style="width: 490px; margin-left:63px;"
+                            value="${dataDetail.chip}"></span>
+
+                    <div class="error" id="chip-error"></div>
+                </div>
+            </div>
+            <div class="row-pro">
+                <div class="col-pro">
+                    <label for=""><b>In The Box:</b> </label>
+                    <textarea name="inTheBox" id="" style="height:80px;" cols="30" rows="10"
+                        class="form-control">${dataDetail.chip}</textarea>
+                    <div class="error" id="inTheBox-error"></div>
+                </div>
+            </div>
+            <div class="row-pro">
+                <div class="col-pro">
+                    <label for=""><b>Release Date:</b> </label>
+                    <span><input name="releaseDate" type="date" class="form-control" placeholder=""
+                            style="width: 150px;" value="${dataDetail.releaseDate}"></span>
+                    <div class="error" id="releaseDate-error"></div>
+                </div>
+            </div>
+            <div class="row-pro" style="margin-top: 30px;">
+                <div class="col-pro ">
+                    <label for=""><b>Image:</b> </label>
+                    <span><input id="photo" name="img" type="file" style="width:490px; margin-left: 55px;"
+                            multiple></span>
+                </div>
+            </div>
+            <div>
+                <div class="col-pro">
+                    <label for=""><b>Video:</b> </label>
+                    <span><input name="video" style="width:490px; margin-left: 57px;" class="form-control" type="text"
+                            value="${data.video}"></span>
+                </div>
+            </div>
         </div>
     </form>
-    <button id="addBtn" class="btn" disabled >Update</button>`;
+    <button id="addBtn" class="btn" style="margin-top:20px;" disabled>Update</button>`;
 
     return html;
 };
@@ -782,7 +937,7 @@ view.showCustomer = async (index, option) => {
             </tr>`;
         }
     } else if (option == 'update') {
-        mainInformation.innerHTML = view.htmlInputCustomer(data[index]);
+        mainInformation.innerHTML = view.htmlUpdateCustomer(data[index]);
         let optionGender = document.getElementById('optionGender');
         console.log(data[index].gender);
         if (data[index].gender == 'male') {
@@ -833,7 +988,7 @@ view.htmlCustomerList = (data, i) => {
     return html;
 };
 
-view.htmlInputCustomer = (data) => {
+view.htmlUpdateCustomer = (data) => {
     html = `
     <form id="updateForm">
         <div class="right__inputWrapper">
@@ -875,52 +1030,52 @@ view.htmlInputCustomer = (data) => {
 
 view.htmlDetailCustomer = (data) => {
     html = `
-        <div class="img_pro">
-        <img src="${data.avatar}" alt="">
+    
+    <div class="customer-info">
+        <div class="customer-detail">
+            <img style="width:300px; height:300px; border-radius:50%; margin: 0 0 20px 30%;" src="${data.avatar}" alt="">
         </div>
-        <div class="main_infor">
-            <div class="infro_detail">
-                <h1>${data.email}</h1>
+        <div class="customer-detail">
+            <h1>${data.email}</h1>
+        </div>
+        <div class="customer-detail">
+            <label><b>Name: </b></label><span>${data.name}</span>
+        </div>
+        <div class="customer-detail">
+            <label><b>Date of Birth: </b></label><span>${data.dob}</span>
+        </div>
+        <div class="customer-detail">
+            <label> <b>Gender:</b></label><span>${data.gender}</span>
+        </div>
+        <div class="customer-detail">
+            <label> <b>Phone:</b> </label> <span class="price">${data.phone}$</span>
+        </div>
+        <div class="customer-detail">
+            <label><b> Address: </b></label><span>${data.address}, ${data.city}</span>
+        </div>
+        <div class="customer-detail">
+            <label><b> MemberShip: </b></label><span>${data.memberShip} Point</span>
+        </div>
+        <div class="customer-detail">
+            <label><b> Orders: </b></label>
+            <div class="donhang">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th width="200px">Order ID</th>
+                            <th>Created At</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id ="tbody_itemOrder">
+                        <!--JS CODE  -->    
+                    </tbody>
+                </table>
             </div>
-            <div class="infro_detail">
-                <label><b>Name: </b></label><span>${data.name}</span>
-            </div>
-            <div class="infro_detail">
-                <label><b>Date of Birth: </b></label><span>${data.dob}</span>
-            </div>
-            <div class="infro_detail">
-                <label> <b>Gender:</b></label><span>${data.gender}</span>
-            </div>
-            <div class="infro_detail">
-                <label> <b>Phone:</b> </label> <span class="price">${data.phone}$</span>
-            </div>
-            <div class="infro_detail">
-                <label><b> Address: </b></label><span>${data.address}, ${data.city}</span>
-            </div>
-            <div class="infro_detail">
-                <label><b> MemberShip: </b></label><span>${data.memberShip} Point</span>
-            </div>
-            <div class="infro_detail">
-                <label><b> Orders: </b></label>
-                <div class="donhang">
-                    <table width="100%">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th width="200px">Order ID</th>
-                                <th>Created At</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id ="tbody_itemOrder">
-                            <!--JS CODE  -->    
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-        </div>`;
+        </div>
+    </div>`;
     return html;
 };
 
@@ -1012,7 +1167,7 @@ view.htmlCategoryList = (data, i) => {
         <td data-label="">${data.brand}</td>
         <td data-label="">${data.des}</td>
         <td data-label=""><img src="${data.logo}" alt=""></td>
-        <td data-label="Edit" class="right__iconTable" onclick="view.showCustomer(${i},'update')"><img src="assets/icon-edit.svg" alt=""></td>
+        <td data-label="Edit" class="right__iconTable" onclick=""><img src="assets/icon-edit.svg" alt=""></td>
         <td data-label="Delete" class="right__iconTable" onclick="view.removeCategory('categories', '${data.id}','${data.brand}')"><img src="assets/icon-trash-black.svg" alt=""></td>
     </tr>`;
     return html;
@@ -1146,7 +1301,6 @@ view.loadChart = async (startDate, endDate) => {
                 borderWidth: 1,
                 backgroundColor: ['rgba(255,99,132,0.2)'],
                 borderColor: ['rgba(255,99,132,1)']
-
             }]
         },
         options: {
@@ -1158,9 +1312,6 @@ view.loadChart = async (startDate, endDate) => {
                             return '$ ' + value;
                         }
                     }
-
-
-
                 }]
             }
         }
