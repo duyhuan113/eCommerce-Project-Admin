@@ -253,7 +253,7 @@ body {
 }
 
 .right__content {
-  padding: 60px 5%;
+  padding:3% 5%;
 }
 
 @media screen and (max-width: 799px) {
@@ -454,10 +454,6 @@ body {
 .right table td img {
   width: 60px;
   border-radius: 2px;
-}
-
-.right__iconTable {
-  text-align: center !important;
 }
 
 .right__iconTable img {
@@ -706,6 +702,7 @@ body {
 .topnav button i{
   margin-left: -8px;
 }
+
 /*
 * Slide image product detail page
 */
@@ -813,7 +810,6 @@ height: 90px;
 .tbl-pro-detail table{
   width: 100%;
   float: left;
-  margin-top: 20px;
 }
 .tbl-pro-detail table tr{
   border-radius: 5px 5px 0 0;
@@ -1209,11 +1205,17 @@ input:checked + .slider:before {
 */
 .customer-info{
   float: left;
-  margin-left: 150px;
+  width: 40%;
 }
 .customer-detail{
-  margin-top: 6px;
-  padding: 6px 0 10px 0;
+  margin: 20px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgb(207, 194, 194) ;
+}
+.customer-order{
+  float: left;
+  width: 55%;
+  margin-left: 3%;
 }
 
 .form-control:focus {
@@ -1223,9 +1225,3 @@ input:checked + .slider:before {
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
-
-/* phân trang */
-
-/* .pagination li:hover{
-  cursor: pointer;
-} */

@@ -1033,10 +1033,10 @@ view.htmlDetailCustomer = (data) => {
     
     <div class="customer-info">
         <div class="customer-detail">
-            <img style="width:300px; height:300px; border-radius:50%; margin: 0 0 20px 30%;" src="${data.avatar}" alt="">
+            <img style="width:200px; height:200px; border-radius:50%; margin: 0 0 20px 10%;" src="${data.avatar}" alt="">
         </div>
         <div class="customer-detail">
-            <h1>${data.email}</h1>
+            <h2>${data.email}</h2>
         </div>
         <div class="customer-detail">
             <label><b>Name: </b></label><span>${data.name}</span>
@@ -1056,24 +1056,24 @@ view.htmlDetailCustomer = (data) => {
         <div class="customer-detail">
             <label><b> MemberShip: </b></label><span>${data.memberShip} Point</span>
         </div>
-        <div class="customer-detail">
-            <label><b> Orders: </b></label>
-            <div class="donhang">
-                <table width="100%">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th width="200px">Order ID</th>
-                            <th>Created At</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id ="tbody_itemOrder">
-                        <!--JS CODE  -->    
-                    </tbody>
-                </table>
-            </div>
+    </div>
+    <div class="customer-order">
+        <div class="donhang">
+        <h3 style="padding-bottom:10px; color:red;">List Order:</h3>
+            <table width="100%">
+                <thead>
+                    <tr >
+                        <th class="br-l">No.</th>
+                        <th width="150px">Order ID</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th width="100px" class="br-r">Total</th>
+                    </tr>
+                </thead>
+                <tbody id ="tbody_itemOrder">
+                    <!--JS CODE  -->    
+                </tbody>
+            </table>
         </div>
     </div>`;
     return html;
