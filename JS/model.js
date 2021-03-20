@@ -108,7 +108,7 @@ model.update = async (id, data, collection) => {
   alert("ok");
 };
 model.removeItem = async (collection, id) => {
-    console.log(collection, id);
+  console.log(collection, id);
   if (confirm("Delete This Item?")) {
     await firebase
       .firestore()
@@ -117,7 +117,12 @@ model.removeItem = async (collection, id) => {
       .delete()
       .then(async function () {
         await model.getProductsData();
-        await view.showProductList()
+        if (collection === "categories") {
+          await view.showCategoryList();
+        } else if (collection === "products") {
+          await view.showProductList();
+        }
+
         await model.getUsersData();
         alert("Document successfully deleted!");
       })

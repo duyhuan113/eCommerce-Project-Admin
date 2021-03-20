@@ -132,7 +132,7 @@ component.homePage = `
         <div id="myModal" class="modal">
             <!-- Modal content -->
             <div class="modal-content">
-                <div class="right__title">Edit Product Information <span id="closeBtn" class="close">&times;</span></div>
+                <div class="right__title">Information <span id="closeBtn" class="close">&times;</span></div>
                     
                     <div class="right">
                         <div class="right__content">
@@ -601,9 +601,9 @@ component.reportPage = `
                 <div id="rangeMonths" class="rangeMonths">
                     <h1>DATE RANGE</h1>
                     <h3 for="strDate"> START DATE</h3>
-                    <input id="strDate" type="date" value="2020-11-01">
+                    <input id="strDate" type="date" value="2021-03-01">
                     <h3 for="endDate"> END DATE</h3>
-                    <input id="endDate" type="date" value="2020-11-30">
+                    <input id="endDate" type="date" value="2020-03-30">
                     <button id="viewDateRangeBtn" class="btn" onclick="view.getDateRange()">View</button>
                 </div>
                 <div id="topPerformProduct" class="topPerformProduct">

@@ -416,7 +416,9 @@ view.htmlDetailProduct = (data) => {
     </div>
     <div class="video">
     <b>Video introduction product:</b>
-           <div>${data.video} </div> 
+      <iframe width="100%" height="400px"
+        src="${data.video}">
+      </iframe> 
     </div>`;
   return html;
 };
@@ -1482,7 +1484,7 @@ view.setErrorMessage = (elementId, content) => {
 };
 
 // function này copy trên mạng
-function formatDate(input) {
+function  formatDate(input) {
   var date = new Date(input);
   return [
     date.getFullYear(),
