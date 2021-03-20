@@ -23,61 +23,61 @@ component.loginPage = `
 </div>
 `;
 
-// component.sideBar = `
-// <div class="left">
-//     <span lass="left__icon">
-//         <span></span>
-//         <span></span>
-//         <span></span>
-//     </span>
-//     <div class="left__content">
-//         <div class="left__logo" onclick="view.setScreenBtn('homePage')"><img src="IMG/logoshop.png"> </div>
-//         <div class="left__profile">
-//             <div class="left__image"><img src="assets/goku.jfif" alt=""></div>
-//             <p class="left__name">Supper Saya</p>
-//         </div>
-//         <ul class="left__menu">
+component.sideBar = `
+<div class="left">
+    <span lass="left__icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </span>
+    <div class="left__content">
+        <div class="left__logo" onclick="view.setScreenBtn('homePage')"><img src="IMG/logoshop.png"> </div>
+        <div class="left__profile">
+            <div class="left__image"><img src="assets/goku.jfif" alt=""></div>
+            <p class="left__name">Supper Saya</p>
+        </div>
+        <ul class="left__menu">
 
-//             <li class=" dropdown">
-//                 <div class="dropbtn" onclick="view.setScreenBtn('homePage')"></i>DashBoard</div>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('homePage')"></i>DashBoard</div>
 
-//             </li>
-//             <li class=" dropdown">
-//                 <div class="dropbtn" onclick="view.setScreenBtn('productPage')">Product<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-//                 <div class=" dropdown-content">
-//                     <a onclick="view.setScreenBtn('addProduct')" href="">Add Product</a>
-//                 </div>
-//             </li>
-//             <li class=" dropdown">
-//                 <div class="dropbtn" onclick="view.setScreenBtn('categoryPage')">Category<img
-//                         class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
-//                 <div class=" dropdown-content">
-//                     <a onclick="view.setScreenBtn('addCategory')" href="">Add Category</a>
-//                 </div>
-//             </li>
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('productPage')">Product<img class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                <div class=" dropdown-content">
+                    <a onclick="view.setScreenBtn('addProduct')" href="">Add Product</a>
+                </div>
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('categoryPage')">Category<img
+                        class="left__iconDown" src="assets/arrow-down.svg" alt=""></div>
+                <div class=" dropdown-content">
+                    <a onclick="view.setScreenBtn('addCategory')" href="">Add Category</a>
+                </div>
+            </li>
 
-//             <li class=" dropdown">
-//                 <div class="dropbtn" onclick="view.setScreenBtn('customerPage')">Customer</div>
-//             </li>
-//             <li class=" dropdown">
-//                 <div class="dropbtn" onclick="view.setScreenBtn('orderPage')">Order<img class="left__iconDown"
-//                         src="assets/arrow-down.svg" alt=""></div>
-//                 <div class=" dropdown-content">
-//                     <a onclick="view.setScreenBtn('reportPage')" href="">View Report</a>
-//                 </div>
-//             </li>
-//             <li class=" dropdown">
-//                 <div class="dropbtn" onclick="view.signOutButton()">LogOut</div>
-//             </li>
-//         </ul>
-//     </div>
-//     </div>
-//     <!-- div Loading -->
-//     <div id="loading" style=" display: none;">
-//     <div class="overLay"></div>
-//     <div class="loader"></div>
-// </div>
-// `;
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('customerPage')">Customer</div>
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.setScreenBtn('orderPage')">Order<img class="left__iconDown"
+                        src="assets/arrow-down.svg" alt=""></div>
+                <div class=" dropdown-content">
+                    <a onclick="view.setScreenBtn('reportPage')" href="">View Report</a>
+                </div>
+            </li>
+            <li class=" dropdown">
+                <div class="dropbtn" onclick="view.signOutButton()">LogOut</div>
+            </li>
+        </ul>
+    </div>
+    </div>
+    <!-- div Loading -->
+    <div id="loading" style=" display: none;">
+    <div class="overLay"></div>
+    <div class="loader"></div>
+</div>
+`;
 
 component.homePage = `
     <div class="right">
@@ -198,173 +198,177 @@ component.productPage = `
     </div>`;
 
 component.addProduct = `
-    <div class="right">
-        <div class="right__content">
-            <div class="right__title">Add Product</div>
-            <div class="right__formWrapper">
-                <form id="addProductForm" action="" method="POST">
-                    <div class="add-pro">
-                        <div class="row-pro">
-                            <label for=""><b>Name:</b> </label>
-                            <span><input type="text" class="form-control" name="name" placeholder="Name"
-                                    style="width: 390px; " required></span>
-                            <div class="error" id="name-error"></div>
+<div class="right">
+    <div class="right__content">
+        <div class="right__title">Add Product</div>
+        <div class="right__formWrapper">
+            <form id="addProductForm" action="" method="POST">
+                <div class="add-pro">
+                    <div class="row-pro">
+                        <label for=""><b>Name:</b> </label>
+                        <span><input type="text" class="form-control" name="name" placeholder="Name"
+                                style="width: 390px; " required></span>
+                        <div class="error" id="name-error"></div>
 
+                    </div>
+                    <div class="row-pro">
+                        <div class="col-pro ma-55">
+                            <label for="Color"><b>Category:</b></label>
+                            <div> <select id="optionCategory" name="category" class="form-control" style="width:180px">
+                                    <option value="">-- Choose a category -- </option>
+                                    <!-- JS CODE  -->
+                                </select></div>
+                            <div class="error" id="category-error"></div>
                         </div>
-                        <div class="row-pro">
-                            <div class="col-pro ma-55">
-                                <label for="Color"><b>Category:</b></label>
-                                <div> <select id="optionCategory" name="category" class="form-control"
-                                        style="width:180px">
-                                        <option value="">-- Choose a category -- </option>
-                                        <!-- JS CODE  -->
-                                    </select></div>
-                                <div class="error" id="category-error"></div>
-                            </div>
-                            <div class="col-pro ma-30">
-                                <label for="Color"><b>Corlor:</b></label>
-                                <div>
-                                    <select id="optionColor" class="form-control" name="color" style="width:180px">
-                                        <option value="">-- Choose a color --</option>
-                                        <option value="white">White</option>
-                                        <option value="red">Red</option>
-                                        <option value="grey">Grey</option>
-                                        <option value="blue">BLue</option>
-                                        <option value="gold">Gold</option>
-                                        <div class="error" id="color-error"></div>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row-pro">
-                            <div class="col-pro ma-55">
-                                <label for=""><b>Quantity:</b> </label>
-                                <div>
-                                    <input name="quantity" placeholder="Quantity"
-                                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                        type="number" maxlength="6" style="width:180px;" class="form-control" required>
-                                </div>
-                                <div class="error" id="quantity-error"></div>
-                            </div>
-                            <div class="col-pro ma-30">
-                                <label for=""><b>Price:</b> </label>
-                                <div>
-                                    <input name="price"
-                                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                        type="number" maxlength="10" style="width:180px;" class="form-control" required>
-                                </div>
-                                <div class="error" id="price-error"></div>
-                            </div>
-                        </div>
-                        <div class="row-pro">
-                            <label for=""><b>Description:</b> </label>
-                            <div class="text-des">
-                                <textarea id="editor1" name="des" cols="30" rows="10" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="row-pro">
-                            <div class="col-pro ">
-                                <label for=""><b>Font Camera:</b> </label>
-                                <span><input type="text" class="form-control" name="fontCam" placeholder=""
-                                        style="width: 280px;" required></span>
-                                <div class="error" id="fontCam-error"></div>
-                            </div>
-                        </div>
-                        <div class="row-pro">
-                            <div class="col-pro ">
-                                <label for=""><b>Rear Camera:</b> </label>
-                                <span><input name="rearCam" type="text" class="form-control" placeholder=""
-                                        style="width: 280px;" required></span>
-                                <div class="error" id="rearCam-error"></div>
-                            </div>
-                        </div>
-                        <div class="row-pro" style="margin-top:25px;">
-                            <div class="col-pro ma-115">
-                                <label for=""><b>Ram:</b> </label>
-                                <div>
-                                    <span><input name="ram" type="text" class="form-control" placeholder=""
-                                            style="width: 143px;" required></span>
-                                </div>
-                                <div class="error" id="cam-error"></div>
-                            </div>
-                            <div class="col-pro ma-30">
-                                <label for=""><b>Capacity:</b> </label>
-                                <div>
-                                    <span><input name="capacity" type="text" class="form-control" placeholder=""
-                                            style="width: 143px;" required></span>
-                                </div>
-                                <div class="error" id="capacity-error"></div>
-                            </div>
-                            <div class="col-pro ma-30">
-                                <label for=""><b>Battery:</b> </label>
-                                <div>
-                                    <span><input name="battery" type="text" class="form-control" placeholder=""
-                                            style="width: 143px;" required></span>
-                                </div>
-                                <div class="error" id="battery-error"></div>
-                            </div>
-                        </div>
-                        <div class="row-pro" style="margin-top:25px;">
-                            <div class="col-pro ma-115">
-                                <label for=""><b>Operation System:</b> </label>
-                                <div>
-                                    <input name="os" type="text" class="form-control" style="width:230px" name="os"
-                                        placeholder="" required>
-                                </div>
-                                <div class="error" id="os-error"></div>
-                            </div>
-                            <div class="col-pro ma-30">
-                                <label for="""><b>Display:</b> </label>
+                        <div class="col-pro ma-30">
+                            <label for="Color"><b>Corlor:</b></label>
                             <div>
-                                <input name="display" type="text" class="form-control" placeholder=""
-                                    style="width: 230px;" required>
+                                <select id="optionColor" class="form-control" name="color" style="width:180px">
+                                    <option value="">-- Choose a color --</option>
+                                    <option value="white">White</option>
+                                    <option value="red">Red</option>
+                                    <option value="grey">Grey</option>
+                                    <option value="blue">BLue</option>
+                                    <option value="gold">Gold</option>
+
+                                </select>
                             </div>
-                            <div class="error" id="display-error"></div>
+                            <div class="error" id="color-error"></div>
                         </div>
                     </div>
                     <div class="row-pro">
-                        <div class="col-pro">
-                            <label for=""><b>Chip:</b> </label>
-                            <span><input name="chip" type="text" class="form-control"
-                                    style="width: 490px; margin-left:63px;" required></span>
+                        <div class="col-pro ma-55">
+                            <label for=""><b>Quantity:</b> </label>
+                            <div>
+                                <input name="quantity" placeholder="Quantity"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    type="number" maxlength="6" style="width:180px;" class="form-control" required>
+                            </div>
+                            <div class="error" id="quantity-error"></div>
                         </div>
-                        <div class="error" id="chip-error"></div>
+                        <div class="col-pro ma-30">
+                            <label for=""><b>Price:</b> </label>
+                            <div>
+                                <input name="price"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    type="number" maxlength="10" style="width:180px;" class="form-control" required>
+                            </div>
+                            <div class="error" id="price-error"></div>
+                        </div>
                     </div>
                     <div class="row-pro">
-                        <div class="col-pro">
-                            <label for=""><b>In The Box:</b> </label>
-                            <textarea name="inTheBox" style="height:80px;" cols="30" rows="10"
-                                class="form-control"></textarea>
+                        <label for=""><b>Description:</b> </label>
+                        <div class="text-des">
+                            <textarea id="editor1" name="des" cols="30" rows="10" class="form-control"></textarea>
                         </div>
                     </div>
                     <div class="row-pro">
-                        <div class="col-pro">
-                            <label for=""><b>Release Date:</b> </label>
-                            <span><input name="releaseDate" type="date" type="date" class="form-control" placeholder=""
-                                    style="width: 150px;" required></span>
-                            <div class="error" id="releaseDate-error"></div>
-                        </div>
-                    </div>
-                    <div class="row-pro" style="margin-top: 30px;">
                         <div class="col-pro ">
-                            <label for=""><b>Image:</b> </label>
-                            <span><input id="photo" type="file" name="img" type="file"
-                                    style="width:490px; margin-left: 55px;" multiple required></span>
+                            <label for=""><b>Font Camera:</b> </label>
+                            <span><input type="text" class="form-control" name="fontCam" placeholder=""
+                                    style="width: 280px;" required></span>
+                            <div class="error" id="fontCam-error"></div>
                         </div>
                     </div>
-                    <div>
-                        <div class="col-pro">
-                            <label for=""><b>Video:</b> </label>
-                            <span><input name="video" style="width:490px; margin-left: 57px;" class="form-control"
-                                    type="text" placeholder="" required></span>
+                    <div class="row-pro">
+                        <div class="col-pro ">
+                            <label for=""><b>Rear Camera:</b> </label>
+                            <span><input name="rearCam" type="text" class="form-control" placeholder=""
+                                    style="width: 280px;" required></span>
+                            <div class="error" id="rearCam-error"></div>
                         </div>
-                        <div class="error" id="video-error"></div>
                     </div>
-            </div>
-            </form>
-            <button id="addBtn" class="btn" style="margin-top:30px;">Add</button>
+                    <div class="row-pro" style="margin-top:25px;">
+                        <div class="col-pro ma-115">
+                            <label for=""><b>Ram:</b> </label>
+                            <div>
+                                <span><input name="ram" type="text" class="form-control" placeholder=""
+                                        style="width: 143px;" required></span>
+                            </div>
+                            <div class="error" id="ram-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for=""><b>Capacity:</b> </label>
+                            <div>
+                                <span><input name="capacity" type="text" class="form-control" placeholder=""
+                                        style="width: 143px;" required></span>
+                            </div>
+                            <div class="error" id="capacity-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for=""><b>Battery:</b> </label>
+                            <div>
+                                <span><input name="battery" type="text" class="form-control" placeholder=""
+                                        style="width: 143px;" required></span>
+                            </div>
+                            <div class="error" id="battery-error"></div>
+                        </div>
+                    </div>
+                    <div class="row-pro" style="margin-top:25px;">
+                        <div class="col-pro ma-115">
+                            <label for=""><b>Operation System:</b> </label>
+                            <div>
+                                <input name="os" type="text" class="form-control" style="width:230px" name="os"
+                                    placeholder="" required>
+                            </div>
+                            <div class="error" id="os-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for="""><b>Display:</b> </label>
+                        <div>
+                            <input name="display" type="text" class="form-control" placeholder=""
+                                style="width: 230px;" required>
+                        </div>
+                        <div class="error" id="display-error"></div>
+                    </div>
+                </div>
+                <div class="row-pro">
+                    <div class="col-pro">
+                        <label for=""><b>Chip:</b> </label>
+                        <span><input name="chip" type="text" class="form-control"
+                                style="width: 490px; margin-left:63px;" required></span>
+                    </div>
+                    <div class="error" id="chip-error"></div>
+                </div>
+                <div class="row-pro">
+                    <div class="col-pro">
+                        <label for=""><b>In The Box:</b> </label>
+                        <textarea name="inTheBox" style="height:80px;" cols="30" rows="10"
+                            class="form-control"></textarea>
+                    </div>
+                    <div class="error" id="inTheBox-error"></div>
+
+                </div>
+                <div class="row-pro">
+                    <div class="col-pro">
+                        <label for=""><b>Release Date:</b> </label>
+                        <span><input name="releaseDate" type="date"  class="form-control" placeholder=""
+                                style="width: 150px;" required></span>
+                        
+                    </div>
+                    <div class="error" id="releaseDate-error"></div>
+                </div>
+                <div class="row-pro" style="margin-top: 30px;">
+                    <div class="col-pro ">
+                        <label for=""><b>Image:</b> </label>
+                        <span><input id="photo" type="file" name="img" type="file"
+                                style="width:490px; margin-left: 55px;" multiple required></span>
+                    </div>
+                    <div class="error" id="img-error"></div>
+                </div>
+                <div>
+                    <div class="col-pro">
+                        <label for=""><b>Video:</b> </label>
+                        <span><input name="video" style="width:490px; margin-left: 57px;" class="form-control"
+                                type="text" placeholder="" required></span>
+                    </div>
+                    <div class="error" id="video-error"></div>
+                </div>
         </div>
-    </div>   
+        </form>
+        <button id="addBtn" class="btn" style="margin-top:30px;">Add</button>
+    </div>
+</div>
 `;
 
 

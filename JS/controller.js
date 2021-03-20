@@ -1,66 +1,160 @@
 const controller = {};
-controller.login = (data) => {
-    view.setErrorMessage('email-error', data.email === '' ? 'Please Enter Your Email' : '');
 
-    if (data.password === '') {
-        view.setErrorMessage('password-error', 'Please Enter Your Password');
+controller.login = (data) => {
+  view.setErrorMessage(
+    "email-error",
+    email === "" ? "Please Enter Your Email" : ""
+  );
+
+  if (password === "") {
+    view.setErrorMessage("password-error", "Please Enter Your Password");
+  } else {
+    if (validatePassword(password) == true) {
+      view.setErrorMessage("password-error", "");
     } else {
-        if (validatePassword(data.password) == true) {
-            view.setErrorMessage('password-error', '');
-        } else {
-            view.setErrorMessage('password-error', 'Password Must Be Longer Than 6 Characters, Contains 1 Upper Case Character and 1 Number');
-        }
+      view.setErrorMessage(
+        "password-error",
+        "Password Must Be Longer Than 6 Characters, Contains 1 Upper Case Character and 1 Number"
+      );
     }
-    if (data.email !== '' && data.password !== '') {
-        model.login(data);
-    };
+  }
+  if (email !== "" && password !== "") {
+    model.login(data);
+  }
 };
 
 controller.validateAddProductForm = (data) => {
-    dataDetail = data.detail
-    view.setErrorMessage('name-error', data.name === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('price-error', data.price === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('color-error', data.color === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('quantity-error', data.availableQuantity === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('rearCam-error', dataDetail.rearCam === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('fontCam-error', dataDetail.fontCam === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('ram-error', dataDetail.ram === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('capacity-error', dataDetail.capacity === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('os-error', dataDetail.os === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('chip-error', dataDetail.chip === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('display-error', dataDetail.display === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('battery-error', dataDetail.battery === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('inTheBox-error', dataDetail.inTheBox === '' ? 'Please Enter Product ' : '');
-    view.setErrorMessage('releaseDate-error', dataDetail.releaseDate === '' ? 'Please Enter Product ' : '');
-
-    if(data.name !=='' && data.price !=='' && data.color !=='' && data.availableQuantity !=='' && data.releaseDate !=='' ){
-        return true
-    }else{
-        return false
+    let dataDetail = data.detail;
+    const {
+      name,
+      category,
+      color,
+      availableQuantity,
+      price,
+      des,
+      ram,
+      video,
+    } = data;
+    const {
+      fontCam,
+      rearCam,
+      capacity,
+      battery,
+      os,
+      display,
+      chip,
+      inTheBox,
+      releaseDate,
+    } = dataDetail;
+    view.setErrorMessage("name-error", name === "" ? "Please Enter  " : "");
+    view.setErrorMessage("price-error", price === "" ? "Please Enter  " : "");
+    view.setErrorMessage("color-error", color === "" ? "Please Enter  " : "");
+    view.setErrorMessage(
+      "quantity-error",
+      availableQuantity === "" ? "Please Enter  " : ""
+    );
+    view.setErrorMessage("rearCam-error", rearCam === "" ? "Please Enter  " : "");
+    view.setErrorMessage("fontCam-error", fontCam === "" ? "Please Enter  " : "");
+    view.setErrorMessage("ram-error", ram === "" ? "Please Enter  " : "");
+    view.setErrorMessage(
+      "capacity-error",
+      capacity === "" ? "Please Enter  " : ""
+    );
+    view.setErrorMessage("os-error", os === "" ? "Please Enter  " : "");
+    view.setErrorMessage("chip-error", chip === "" ? "Please Enter  " : "");
+    view.setErrorMessage("display-error", display === "" ? "Please Enter  " : "");
+    view.setErrorMessage("battery-error", battery === "" ? "Please Enter  " : "");
+    view.setErrorMessage(
+      "inTheBox-error",
+      inTheBox === "" ? "Please Enter  " : ""
+    );
+    // view.setErrorMessage(
+    //   "releaseDate-error",
+    //   releaseDate === "" ? "Please Enter  " : ""
+    // );
+  
+    if (
+      name !== "" &&
+      price !== "" &&
+      color !== "" &&
+      availableQuantity !== "" &&
+      releaseDate !== ""
+    ) {
+      return true;
+    } else {
+      return false;
     }
-};
+  };
 
-controller.validateForm = (data) => {
-    let isNotEmpty = true;
-    for (let property in data) {
-        if (data[property] == '') {
-            view.setErrorMessage(`${property}-error`, 'Field is Required ');
-            // console.log(${property}-error);
-            isNotEmpty = false;  
-        }else{
-            view.setErrorMessage(`${property}-error`, '');
-        }
-    };
-    return isNotEmpty;
-};
+controller.validateUpdateProductForm = (data) => {
+  let dataDetail = data.detail;
+  const {
+    name,
+    category,
+    color,
+    availableQuantity,
+    price,
+    des,
+    ram,
+    video,
+  } = data;
+  const {
+    fontCam,
+    rearCam,
+    capacity,
+    battery,
+    os,
+    display,
+    chip,
+    inTheBox,
+    releaseDate,
+  } = dataDetail;
+  view.setErrorMessage("name-error", name === "" ? "Please Enter  " : "");
+  view.setErrorMessage("price-error", price === "" ? "Please Enter  " : "");
+  view.setErrorMessage("color-error", color === "" ? "Please Enter  " : "");
+  view.setErrorMessage(
+    "availableQuantity-error",
+    availableQuantity === "" ? "Please Enter  " : ""
+  );
+  view.setErrorMessage("rearCam-error", rearCam === "" ? "Please Enter  " : "");
+  view.setErrorMessage("fontCam-error", fontCam === "" ? "Please Enter  " : "");
+  view.setErrorMessage("ram-error", ram === "" ? "Please Enter  " : "");
+  view.setErrorMessage(
+    "capacity-error",
+    capacity === "" ? "Please Enter  " : ""
+  );
+  view.setErrorMessage("os-error", os === "" ? "Please Enter  " : "");
+  view.setErrorMessage("chip-error", chip === "" ? "Please Enter  " : "");
+  view.setErrorMessage("display-error", display === "" ? "Please Enter  " : "");
+  view.setErrorMessage("battery-error", battery === "" ? "Please Enter  " : "");
+  view.setErrorMessage(
+    "inTheBox-error",
+    inTheBox === "" ? "Please Enter  " : ""
+  );
+  view.setErrorMessage(
+    "releaseDate-error",
+    releaseDate === "" ? "Please Enter  " : ""
+  );
 
+  if (
+    name !== "" &&
+    price !== "" &&
+    color !== "" &&
+    availableQuantity !== "" &&
+    releaseDate !== ""
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 function validateEmail(email) {
-    const emailFomat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return emailFomat.test(String(email).toLowerCase());
-};
+  const emailFomat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return emailFomat.test(String(email).toLowerCase());
+}
 
 function validatePassword(password) {
-    var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{6,}$/;
-    return re.test(password);
-};
+  var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{6,}$/;
+  return re.test(password);
+}

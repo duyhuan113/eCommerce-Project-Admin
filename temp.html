@@ -1,228 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
+<div class="right">
+    <div class="right__content">
+        <div class="right__title">Add Product</div>
+        <div class="right__formWrapper">
+            <form id="addProductForm" action="" method="POST">
+                <div class="add-pro">
+                    <div class="row-pro">
+                        <label for=""><b>Name:</b> </label>
+                        <span><input type="text" class="form-control" name="name" placeholder="Name"
+                                style="width: 390px; " required></span>
+                        <div class="error" id="name-error"></div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dynamic Table</title>
-    <link rel="stylesheet" href="stylesheet.css">
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+                    </div>
+                    <div class="row-pro">
+                        <div class="col-pro ma-55">
+                            <label for="Color"><b>Category:</b></label>
+                            <div> <select id="optionCategory" name="category" class="form-control" style="width:180px">
+                                    <option value="">-- Choose a category -- </option>
+                                    <!-- JS CODE  -->
+                                </select></div>
+                            <div class="error" id="category-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for="Color"><b>Corlor:</b></label>
+                            <div>
+                                <select id="optionColor" class="form-control" name="color" style="width:180px">
+                                    <option value="">-- Choose a color --</option>
+                                    <option value="white">White</option>
+                                    <option value="red">Red</option>
+                                    <option value="grey">Grey</option>
+                                    <option value="blue">BLue</option>
+                                    <option value="gold">Gold</option>
 
-</head>
-
-<body class="light-blue darken-1">
-    <main>
-        <section id="crypto-section" class="container center-align">
-            <header>
-                <h2>CryptoCurrency Table</h2>
-            </header>
-            <table id="crypto-table" class="highlight centered">
-                <thead>
-                    <th>Name</th>
-                    <th>Rank</th>
-                    <th>Price</th>
-                    <th>24 Hour Change</th>
-                </thead>
-                <tbody id="crypto-table-body">
-
-                </tbody>
-            </table>
-            <footer id="pagination">
-                <ul class="pagination">
-                    <li class="disabled arrow-left"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                    <li class="active"><a>1</a></li>
-                    <li class="waves-effect"><a>2</a></li>
-                    <li class="waves-effect"><a>3</a></li>
-                    <li class="waves-effect"><a>4</a></li>
-                    <li class="waves-effect"><a>5</a></li>
-                    <li class="waves-effect"><a>6</a></li>
-                    <li class="waves-effect"><a>7</a></li>
-                    <li class="waves-effect"><a>8</a></li>
-                    <li class="waves-effect"><a>9</a></li>
-                    <li class="waves-effect"><a>10</a></li>
-                    <li class="waves-effect arrow-right"><a href="#!"><i class="material-icons">chevron_right</i></a>
-                    </li>
-                </ul>
-            </footer>
-        </section>
-    </main>
-
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-</body>
-<script>
-    function getUrl(start = 0) {
-        return 'https://api.coinlore.com/api/tickers/?start=' + start + '&limit=10';
-    }
-    function getData(url) {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {loadDataIntoTable(data);console.log(data);})
-            .catch(err => console.log(err));
-            
-    }
-
-    function loadDataIntoTable(data) {
-        let coinName = [];
-        let coinSymbol = [];
-        let coinRank = [];
-        let coinPrice = [];
-        let coin24Change = [];
-
-        data['data'].forEach((coin) => {
-            coinName.push(coin.name);
-            coinSymbol.push(coin.symbol);
-            coinRank.push(coin.rank);
-            coinPrice.push(coin.price_usd);
-            coin24Change.push(coin.percent_change_24h);
-        });
-
-        let tableBody = document.getElementById('crypto-table-body');
-
-        let html = "";
-
-        for (let i = 0; i < coinName.length; i++) {
-            html += "<tr>";
-            html += "<td>" + coinName[i] + " (" + coinSymbol[i] + ")" + "</td>";
-            html += "<td>" + coinRank[i] + "</td>";
-            html += "<td>$" + coinPrice[i] + "</td>";
-            if (coin24Change[i] > 0) {
-                html += "<td class='green-text text-darken-4'>+" + coin24Change[i] + "</td>";
-            } else {
-                html += "<td class='red-text text-darken-4'>" + coin24Change[i] + "</td>";
-            }
-
-            html += "</tr>";
-        }
-
-        tableBody.innerHTML = html;
-    }
-
-    function handleNumberClick(clickedLink, leftArrow, rightArrow) {
-        clickedLink.parentElement.classList = "active";
-        let clickedLinkPageNumber = parseInt(clickedLink.innerText);
-        const url = getUrl((clickedLinkPageNumber * 10) - 10);
-        getData(url);
-
-        switch (clickedLinkPageNumber) {
-            case 1:
-                disableLeftArrow(leftArrow);
-                if (rightArrow.className.indexOf('disabled') !== -1) {
-                    enableRightArrow(rightArrow);
-                }
-                break;
-            case 10:
-                disableRightArrow(rightArrow);
-                if (leftArrow.className.indexOf('disabled') !== -1) {
-                    enableLeftArrow(leftArrow);
-                }
-                break;
-            default:
-                if (leftArrow.className.indexOf('disabled') !== -1) {
-                    enableLeftArrow(leftArrow);
-                }
-                if (rightArrow.className.indexOf('disabled') !== -1) {
-                    enableRightArrow(rightArrow);
-                }
-                break;
-        }
-    }
-
-    function handleLeftArrowClick(activePageNumber, leftArrow, rightArrow) {
-        //move to previous page
-        let previousPage = document.querySelectorAll('li')[activePageNumber - 1];
-        previousPage.classList = "active";
-        url = getUrl(((activePageNumber - 1) * 10) - 10);
-        getData(url);
-
-        if (activePageNumber === 10) {
-            enableRightArrow(rightArrow);
-        }
-
-        if (activePageNumber - 1 === 1) {
-            disableLeftArrow(leftArrow);
-        }
-    }
-
-    function handleRightArrowClick(activePageNumber, leftArrow, rightArrow) {
-        //move to next page
-        let nextPage = document.querySelectorAll('li')[activePageNumber + 1];
-        nextPage.classList = "active";
-
-        url = getUrl(((activePageNumber + 1) * 10) - 10);
-        getData(url);
-
-        if (activePageNumber === 1) {
-            enableLeftArrow(leftArrow);
-        }
-
-        if (activePageNumber + 1 === 10) {
-            disableRightArrow(rightArrow);
-        }
-    }
-
-    function disableLeftArrow(leftArrow) {
-        leftArrow.classList = "disabled arrow-left";
-    }
-
-    function enableLeftArrow(leftArrow) {
-        leftArrow.classList = "waves-effect arrow-left";
-    }
-
-    function disableRightArrow(rightArrow) {
-        rightArrow.classList = "disabled arrow-right";
-    }
-
-    function enableRightArrow(rightArrow) {
-        rightArrow.classList = "waves-effect arrow-right";
-    }
-
-    function init() {
-        const url = getUrl();
-        getData(url);
-    }
-
-    init();
-
-    //handle pagination
-    let pageLinks = document.querySelectorAll('a');
-    let activePageNumber;
-    let clickedLink;
-    let leftArrow;
-    let rightArrow;
-    let url = '';
-
-    pageLinks.forEach((element) => {
-        element.addEventListener("click", function () {
-            leftArrow = document.querySelector('.arrow-left');
-            rightArrow = document.querySelector('.arrow-right');
-            console.log(rightArrow);
-            activeLink = document.querySelector('.active');
-
-            //get active page number 
-            activePageNumber = parseInt(activeLink.innerText);
-
-            if ((this.innerText === 'chevron_left' && activePageNumber === 1) || (this.innerText === 'chevron_right' && activePageNumber === 10)) {
-                return;
-            }
-
-            //update active class
-            activeLink.classList = "waves-effect";
-
-            if (this.innerText === 'chevron_left') {
-                handleLeftArrowClick(activePageNumber, leftArrow, rightArrow);
-            } else if (this.innerText === 'chevron_right') {
-                handleRightArrowClick(activePageNumber, leftArrow, rightArrow);
-            } else {
-                handleNumberClick(this, leftArrow, rightArrow);
-            }
-
-        });
-    });
-</script>
-
-</html>
+                                </select>
+                            </div>
+                            <div class="error" id="color-error"></div>
+                        </div>
+                    </div>
+                    <div class="row-pro">
+                        <div class="col-pro ma-55">
+                            <label for=""><b>Quantity:</b> </label>
+                            <div>
+                                <input name="quantity" placeholder="Quantity"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    type="number" maxlength="6" style="width:180px;" class="form-control" required>
+                            </div>
+                            <div class="error" id="quantity-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for=""><b>Price:</b> </label>
+                            <div>
+                                <input name="price"
+                                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                    type="number" maxlength="10" style="width:180px;" class="form-control" required>
+                            </div>
+                            <div class="error" id="price-error"></div>
+                        </div>
+                    </div>
+                    <div class="row-pro">
+                        <label for=""><b>Description:</b> </label>
+                        <div class="text-des">
+                            <textarea id="editor1" name="des" cols="30" rows="10" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="row-pro">
+                        <div class="col-pro ">
+                            <label for=""><b>Font Camera:</b> </label>
+                            <span><input type="text" class="form-control" name="fontCam" placeholder=""
+                                    style="width: 280px;" required></span>
+                            <div class="error" id="fontCam-error"></div>
+                        </div>
+                    </div>
+                    <div class="row-pro">
+                        <div class="col-pro ">
+                            <label for=""><b>Rear Camera:</b> </label>
+                            <span><input name="rearCam" type="text" class="form-control" placeholder=""
+                                    style="width: 280px;" required></span>
+                            <div class="error" id="rearCam-error"></div>
+                        </div>
+                    </div>
+                    <div class="row-pro" style="margin-top:25px;">
+                        <div class="col-pro ma-115">
+                            <label for=""><b>Ram:</b> </label>
+                            <div>
+                                <span><input name="ram" type="text" class="form-control" placeholder=""
+                                        style="width: 143px;" required></span>
+                            </div>
+                            <div class="error" id="ram-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for=""><b>Capacity:</b> </label>
+                            <div>
+                                <span><input name="capacity" type="text" class="form-control" placeholder=""
+                                        style="width: 143px;" required></span>
+                            </div>
+                            <div class="error" id="capacity-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for=""><b>Battery:</b> </label>
+                            <div>
+                                <span><input name="battery" type="text" class="form-control" placeholder=""
+                                        style="width: 143px;" required></span>
+                            </div>
+                            <div class="error" id="battery-error"></div>
+                        </div>
+                    </div>
+                    <div class="row-pro" style="margin-top:25px;">
+                        <div class="col-pro ma-115">
+                            <label for=""><b>Operation System:</b> </label>
+                            <div>
+                                <input name="os" type="text" class="form-control" style="width:230px" name="os"
+                                    placeholder="" required>
+                            </div>
+                            <div class="error" id="os-error"></div>
+                        </div>
+                        <div class="col-pro ma-30">
+                            <label for="""><b>Display:</b> </label>
+                        <div>
+                            <input name=" display" type="text" class="form-control" placeholder=""
+                                style="width: 230px;" required>
+                        </div>
+                        <div class="error" id="display-error"></div>
+                    </div>
+                </div>
+                <div class="row-pro">
+                    <div class="col-pro">
+                        <label for=""><b>Chip:</b> </label>
+                        <span><input name="chip" type="text" class="form-control"
+                                style="width: 490px; margin-left:63px;" required></span>
+                    </div>
+                    <div class="error" id="chip-error"></div>
+                </div>
+                <div class="row-pro">
+                    <div class="col-pro">
+                        <label for=""><b>In The Box:</b> </label>
+                        <textarea name="inTheBox" style="height:80px;" cols="30" rows="10"
+                            class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row-pro">
+                    <div class="col-pro">
+                        <label for=""><b>Release Date:</b> </label>
+                        <span><input name="releaseDate" type="date" type="date" class="form-control" placeholder=""
+                                style="width: 150px;" required></span>
+                        <div class="error" id="releaseDate-error"></div>
+                    </div>
+                </div>
+                <div class="row-pro" style="margin-top: 30px;">
+                    <div class="col-pro ">
+                        <label for=""><b>Image:</b> </label>
+                        <span><input id="photo" type="file" name="img" type="file"
+                                style="width:490px; margin-left: 55px;" multiple required></span>
+                    </div>
+                    <div class="error" id="img-error"></div>
+                </div>
+                <div>
+                    <div class="col-pro">
+                        <label for=""><b>Video:</b> </label>
+                        <span><input name="video" style="width:490px; margin-left: 57px;" class="form-control"
+                                type="text" placeholder="" required></span>
+                    </div>
+                    <div class="error" id="video-error"></div>
+                </div>
+        </div>
+        </form>
+        <button id="addBtn" class="btn" style="margin-top:30px;">Add</button>
+    </div>
+</div>
