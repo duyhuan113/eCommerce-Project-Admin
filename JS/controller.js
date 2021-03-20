@@ -1,6 +1,7 @@
 const controller = {};
 
 controller.login = (data) => {
+  const { email, password } = data;
   view.setErrorMessage(
     "email-error",
     email === "" ? "Please Enter Your Email" : ""
@@ -23,68 +24,78 @@ controller.login = (data) => {
   }
 };
 
-controller.validateAddProductForm = (data) => {
-    let dataDetail = data.detail;
-    const {
-      name,
-      category,
-      color,
-      availableQuantity,
-      price,
-      des,
-      ram,
-      video,
-    } = data;
-    const {
-      fontCam,
-      rearCam,
-      capacity,
-      battery,
-      os,
-      display,
-      chip,
-      inTheBox,
-      releaseDate,
-    } = dataDetail;
-    view.setErrorMessage("name-error", name === "" ? "Please Enter  " : "");
-    view.setErrorMessage("price-error", price === "" ? "Please Enter  " : "");
-    view.setErrorMessage("color-error", color === "" ? "Please Enter  " : "");
-    view.setErrorMessage(
-      "quantity-error",
-      availableQuantity === "" ? "Please Enter  " : ""
-    );
-    view.setErrorMessage("rearCam-error", rearCam === "" ? "Please Enter  " : "");
-    view.setErrorMessage("fontCam-error", fontCam === "" ? "Please Enter  " : "");
-    view.setErrorMessage("ram-error", ram === "" ? "Please Enter  " : "");
-    view.setErrorMessage(
-      "capacity-error",
-      capacity === "" ? "Please Enter  " : ""
-    );
-    view.setErrorMessage("os-error", os === "" ? "Please Enter  " : "");
-    view.setErrorMessage("chip-error", chip === "" ? "Please Enter  " : "");
-    view.setErrorMessage("display-error", display === "" ? "Please Enter  " : "");
-    view.setErrorMessage("battery-error", battery === "" ? "Please Enter  " : "");
-    view.setErrorMessage(
-      "inTheBox-error",
-      inTheBox === "" ? "Please Enter  " : ""
-    );
-    // view.setErrorMessage(
-    //   "releaseDate-error",
-    //   releaseDate === "" ? "Please Enter  " : ""
-    // );
-  
-    if (
-      name !== "" &&
-      price !== "" &&
-      color !== "" &&
-      availableQuantity !== "" &&
-      releaseDate !== ""
-    ) {
-      return true;
-    } else {
+controller.validateForm = (data) => {
+  for (property in data) {
+    console.log(property);
+    if (property === "" || property === null) {
       return false;
     }
-  };
+  }
+  return true;
+};
+
+controller.validateAddProductForm = (data) => {
+  let dataDetail = data.detail;
+  const {
+    name,
+    category,
+    color,
+    availableQuantity,
+    price,
+    des,
+    ram,
+    video,
+  } = data;
+  const {
+    fontCam,
+    rearCam,
+    capacity,
+    battery,
+    os,
+    display,
+    chip,
+    inTheBox,
+    releaseDate,
+  } = dataDetail;
+  view.setErrorMessage("name-error", name === "" ? "Please Enter  " : "");
+  view.setErrorMessage("price-error", price === "" ? "Please Enter  " : "");
+  view.setErrorMessage("color-error", color === "" ? "Please Enter  " : "");
+  view.setErrorMessage(
+    "quantity-error",
+    availableQuantity === "" ? "Please Enter  " : ""
+  );
+  view.setErrorMessage("rearCam-error", rearCam === "" ? "Please Enter  " : "");
+  view.setErrorMessage("fontCam-error", fontCam === "" ? "Please Enter  " : "");
+  view.setErrorMessage("ram-error", ram === "" ? "Please Enter  " : "");
+  view.setErrorMessage(
+    "capacity-error",
+    capacity === "" ? "Please Enter  " : ""
+  );
+  view.setErrorMessage("os-error", os === "" ? "Please Enter  " : "");
+  view.setErrorMessage("chip-error", chip === "" ? "Please Enter  " : "");
+  view.setErrorMessage("display-error", display === "" ? "Please Enter  " : "");
+  view.setErrorMessage("battery-error", battery === "" ? "Please Enter  " : "");
+  view.setErrorMessage(
+    "inTheBox-error",
+    inTheBox === "" ? "Please Enter  " : ""
+  );
+  // view.setErrorMessage(
+  //   "releaseDate-error",
+  //   releaseDate === "" ? "Please Enter  " : ""
+  // );
+
+  if (
+    name !== "" &&
+    price !== "" &&
+    color !== "" &&
+    availableQuantity !== "" &&
+    releaseDate !== ""
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 controller.validateUpdateProductForm = (data) => {
   let dataDetail = data.detail;

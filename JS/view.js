@@ -81,19 +81,23 @@ view.setActiveScreen = async (screenName) => {
 };
 
 // function này
-view.showDashBoard = (data) => {
+view.showDashBoard = (ordersData) => {
   const productCardNumber = document.getElementById("productCardNumber");
   const userCardNumber = document.getElementById("userCardNumber");
   const orderCardNumber = document.getElementById("orderCardNumber");
   const orderTable = document.getElementById("orders_tbody");
-  let ordersData = data;
+
   productCardNumber.innerHTML = model.productsData.length;
   userCardNumber.innerHTML = model.usersData.length;
   orderCardNumber.innerHTML = ordersData.length;
   orderTable.innerHTML = "";
-  for (let i = 0; i < 5; i++) {
-    orderTable.innerHTML += view.htmlOrderList(ordersData[i], i);
-    view.setStatusOrder(ordersData[i], i);
+  if (ordersData.length) {
+    for (let i = 0; i < 5; i++) {
+      orderTable.innerHTML += view.htmlOrderList(ordersData[i], i);
+      view.setStatusOrder(ordersData[i], i);
+    }
+  } else {
+    orderTable.textContent += "There are no orders.";
   }
 };
 
@@ -426,7 +430,7 @@ view.htmlUpdateProductForm = (data) => {
     availableQuantity,
     price,
     des,
-    ram,
+
     video,
   } = data;
   const {
@@ -439,7 +443,10 @@ view.htmlUpdateProductForm = (data) => {
     chip,
     inTheBox,
     releaseDate,
+    ram,
   } = dataDetail;
+  console.log();
+
   const html = ` 
     <form id="updateForm">
         <div class="add-pro">
@@ -630,6 +637,7 @@ view.showOrderList = (data) => {
 };
 
 view.htmlOrderList = (data, i) => {
+  console.log(data);
   let html = `
     <tr>
         <td>${i + 1}</td>
@@ -1232,10 +1240,10 @@ view.addCategory = async () => {
           view.loadingScreen("block");
           let logo = await model.uploadImgToFirestorage(files);
           dataToAdd.logo = logo;
-          model.addItem("categories", dataToAdd);
+          await model.addItem("categories", dataToAdd);
           view.loadingScreen("none");
-          window.location.reload();
           alert("Add Successful");
+          window.location.reload();
         }
       } else {
         view.setErrorMessage("img-error", "Please Choose 1 Image");
