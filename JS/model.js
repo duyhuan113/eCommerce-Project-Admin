@@ -19,7 +19,7 @@ model.getProductsData = async () => {
   //đoạn này bóc tách dữ liệu từ db trả về
   const response = await firebase.firestore().collection("products").get();
   model.productsData = getDataFromDocs(response.docs).sort((a, b) =>
-    a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name > a.name ? -1 : 0
+    a.name.toLowerCase() > b.name.toLowerCase() ? 1 : b.name.toLowerCase() > a.name.toLowerCase() ? -1 : 0
   );
   model.getUsersData();
   return model.productsData;
